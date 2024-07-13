@@ -23,10 +23,11 @@ const App = () => {
     <Router>
       <div>
         <Navbar />
-        <SignedIn>
         <Routes>
-        
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home />} /> 
+        </Routes>
+          <SignedIn> 
+          <Routes>
           <Route path="/contact" element={<Contact />} />
           <Route path="/campaign" element={<Campaign />} />
           <Route path="/pricing" element={<Pricing />} />
@@ -39,8 +40,7 @@ const App = () => {
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/admin" element={<ProtectedRoute roles={['admin']}><Admin /></ProtectedRoute>} />
           <Route path="/developer" element={<ProtectedRoute roles={['developer']}><Developer /></ProtectedRoute>} />
-         
-        </Routes>
+        </Routes> 
          </SignedIn>
         <Footer />
       </div>
