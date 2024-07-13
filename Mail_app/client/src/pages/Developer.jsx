@@ -3,23 +3,23 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
 import { checkRole } from '../utils/roles'; 
 
-const Admin = () => {
+const Developer = () => {
   const { isLoaded, isSignedIn} = useAuth();
 
   if (!isLoaded) {
     return <div>Loading...</div>;
   }
 
-  if (!isSignedIn || !checkRole('admin')) {
+  if (!isSignedIn || !checkRole('developer')) {
     return <Navigate to="/" />;
   }
 
   return (
     <>
-      <h1>This is the admin dashboard</h1>
-      <p>This page is restricted to users with the 'admin' role.</p>
+      <h1>This is the developer dashboard</h1>
+      <p>This page is restricted to users with the 'developer' role.</p>
     </>
   );
 };
 
-export default Admin;
+export default Developer;

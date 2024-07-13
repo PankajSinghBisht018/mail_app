@@ -14,6 +14,7 @@ import EmailTemplateCreator from './pages/campaign/EmailTemplateCreator';
 import SelectTemplate from './pages/campaign/SelectTemplate';
 import Analytics from './pages/Analytics';
 import Admin from './pages/Admin';
+import Developer from './pages/Developer';
 import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => {
@@ -34,6 +35,7 @@ const App = () => {
           <Route path="/select-template" element={<SelectTemplate />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/admin" element={<ProtectedRoute roles={['admin']}><Admin /></ProtectedRoute>} />
+          <Route path="/developer" element={<ProtectedRoute roles={['developer']}><Developer /></ProtectedRoute>} />
         </Routes>
         <Footer />
       </div>
