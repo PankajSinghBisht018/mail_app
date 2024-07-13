@@ -1,4 +1,6 @@
+import { useUser } from '@clerk/clerk-react';
 
-export const checkRole = (user, role) => {
-  return user?.publicMetadata?.role === role;
+export const checkRole = (requiredRole) => {
+  const { user } = useUser();
+  return user && user.publicMetadata && user.publicMetadata.role === requiredRole;
 };
