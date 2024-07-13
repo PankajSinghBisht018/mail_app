@@ -16,13 +16,16 @@ import Analytics from './pages/Analytics';
 import Admin from './pages/Admin';
 import Developer from './pages/Developer';
 import ProtectedRoute from './components/ProtectedRoute';
+import { SignedIn } from '@clerk/clerk-react';
 
 const App = () => {
   return (
     <Router>
       <div>
         <Navbar />
+        <SignedIn>
         <Routes>
+        
           <Route path="/" element={<Home />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/campaign" element={<Campaign />} />
@@ -36,7 +39,9 @@ const App = () => {
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/admin" element={<ProtectedRoute roles={['admin']}><Admin /></ProtectedRoute>} />
           <Route path="/developer" element={<ProtectedRoute roles={['developer']}><Developer /></ProtectedRoute>} />
+         
         </Routes>
+         </SignedIn>
         <Footer />
       </div>
     </Router>
