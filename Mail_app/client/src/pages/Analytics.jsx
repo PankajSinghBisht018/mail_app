@@ -93,56 +93,65 @@ const Analytics = () => {
 
   return (
 
-    <motion.div className="max-w-screen min-h-screen mx-auto px-10 bg-gradient-to-b from-purple-900 to-black text-white shadow-md p-6">
-      <Container maxWidth="lg">
-        <Box mt={5}>
-          <motion.div
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="flex items-center mb-4"
-          >
-            <TrendingUp className="mr-2 h-6 w-6 text-blue-500" />
-            <h1 className="text-2xl font-bold">Email Analytics</h1>
-          </motion.div>
-          <Grid container spacing={4}>
-            <Grid item xs={12} md={6}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6">Emails Sent Over Time (Hourly)</Typography>
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.5 }}
-                  >
-                    <Line
-                      data={lineChartData}
-                      options={/* options */}
-                    />
-                  </motion.div>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={12} md={4} sx={{ marginBottom: '10px' }}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6">Template Usage</Typography>
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.5 }}
-                  >
-                    <Doughnut data={pieChartData} />
-                  </motion.div>
-                </CardContent>
-              </Card>
-            </Grid>
+    <div className="max-w-screen min-h-screen mx-auto px-10 bg-gradient-to-b from-purple-900 to-black text-white shadow-md p-6">
+  
+      
+   
+    <Container maxWidth="lg">
+      <Box mt={5}>  
+      <div className="flex items-center mb-4">
+      <TrendingUp className="mr-2 h-6 w-6 text-blue-500" />
+      <h1 className="text-2xl font-bold">Email Analytics</h1>  
+      </div>
+        <Grid container spacing={4}>
+          <Grid item xs={12} md={6}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6">Emails Sent Over Time (Hourly)</Typography>
+                <Line
+                  data={lineChartData}
+                  options={{
+                    scales: {
+                      x: {
+                        type: 'linear',
+                        title: {
+                          display: true,
+                          text: 'Hour of the Day'
+                        }
+                      },
+                      y: {
+                        title: {
+                          display: true,
+                          text: 'Total Emails Sent'
+                        },
+                        beginAtZero: true,
+                        stepSize: 15 
+                      }
+                    },
+                    plugins: {
+                      legend: {
+                        display: true,
+                      }
+                    }
+                  }}
+                />
+              </CardContent>
+            </Card>
           </Grid>
-        </Box>
-      </Container>
-    </motion.div>
+          <Grid item xs={12} md={4} sx={{marginBottom:'10px'}}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6">Template Usage</Typography>
+                <Doughnut data={pieChartData} />
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+      </Box>
+    </Container> 
+    
+    </div>
   );
 };
-
 
 export default Analytics;
