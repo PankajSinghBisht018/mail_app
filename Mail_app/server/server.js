@@ -4,6 +4,7 @@ const connectDB = require('./conn/db');
 const emailRoutes = require('./routes/emailRoutes');
 const donationRoutes =require('./routes/donationRoutes')
 const tempEmailRoutes = require('./routes/tempEmailRoutes');
+const campaignRoutes = require('./routes/campaignRoutes');
 
 require('dotenv').config();
 
@@ -19,6 +20,7 @@ connectDB();
 app.use('/api', emailRoutes);
 app.use('/api', donationRoutes);
 app.use('/api', tempEmailRoutes);
+app.use('/api', campaignRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
