@@ -4,12 +4,12 @@ import EmailEditor from 'react-email-editor';
 import sample from './savefile.json';
 import axios from 'axios';
 import SaveIcon from '@mui/icons-material/Save';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import SendIcon from '@mui/icons-material/Send';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DatePicker from 'react-datepicker';
@@ -154,10 +154,11 @@ const EmailTemplateCreator = () => {
     try {
       const genAI = new GoogleGenerativeAI('AIzaSyAZDaf7usmQ7am6FfWC7J367UKFLalBqUo');
       const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-      const prompt = `email templates content related to ${subject}`;
+      const prompt = `Generate a email template content paragraph aleast 80 words on ${subject}.`;
       const result = await model.generateContent(prompt);
       const response = result.response;
-      const text = response.text();
+      let text = response.text();
+      text = text.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
       setGeneratedContent(text);
     } catch (error) {
       console.error('Error generating email content:', error);
@@ -249,10 +250,10 @@ const EmailTemplateCreator = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setScheduleDialogOpen(false)} className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md">
+          <Button onClick={() => setScheduleDialogOpen(false)} variant='contained' className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white">
             Cancel
           </Button>
-          <Button onClick={scheduleEmail} className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md">
+          <Button onClick={scheduleEmail} variant='contained' className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white">
             Schedule
           </Button>
         </DialogActions>
