@@ -5,6 +5,7 @@ import Template1Image from '../../images/template1.png';
 import Template2Image from '../../images/template2.png';
 import Template3Image from '../../images/template3.png';
 import Template4Image from '../../images/template4.png';
+import Template5Image from '../../images/template5.png';
 
 const SelectTemplate = () => {
   const navigate = useNavigate();
@@ -33,6 +34,9 @@ const SelectTemplate = () => {
         return Template3Image;
       case 'template4.png':
         return Template4Image;
+      case 'template5.png':
+        return Template5Image;
+          
       default:
         return null;
     }
