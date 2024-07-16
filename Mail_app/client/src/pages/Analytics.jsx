@@ -94,9 +94,6 @@ const Analytics = () => {
   return (
 
     <div className="max-w-screen min-h-screen mx-auto px-10 bg-gradient-to-b from-purple-900 to-black text-white shadow-md p-6">
-  
-      
-   
     <Container maxWidth="lg">
       <Box mt={5}>  
       <div className="flex items-center mb-4">
