@@ -9,7 +9,7 @@ const Campaign = () => {
   const navigate = useNavigate();
 
   const handleCreateCampaign = () => {
-    navigate('/create');
+    navigate('/campaign-form');
   };
 
   const handleViewCampaigns = () => {
