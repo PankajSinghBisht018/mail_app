@@ -33,7 +33,8 @@ const App = () => {
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/features" element={<Features />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/create" element={<CampaignForm />} />
+          <Route path="/campaign-form" element={<CampaignForm />} /> 
+          <Route path="/campaign-form/:id" element={<CampaignForm />} />
           <Route path="/all-campaigns" element={<CampaignsList />} />
           <Route path="/create-template" element={<EmailTemplateCreator />} />
           <Route path="/select-template" element={<SelectTemplate />} />
