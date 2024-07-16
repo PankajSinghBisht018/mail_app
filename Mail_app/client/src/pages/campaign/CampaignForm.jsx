@@ -1,25 +1,40 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { TextField, Button, Dialog, DialogActions, DialogContent, DialogTitle, Card, CardContent, CardActions, Typography } from '@mui/material';
 import useCampaignStore from '../../store/useCampaignStore';
-import { motion } from 'framer-motion'
+import { motion } from 'framer-motion';
 
 const CampaignForm = () => {
   const navigate = useNavigate();
-  const [campaignName, setCampaignName] = useState('');
-  const [formData, setFormData] = useState({ from: '', to: '', subject: '' });
-  const [savedText, setSavedText] = useState('');
-  const [isDialogVisible, setDialogVisible] = useState(false);
+  const { id } = useParams();
   const campaigns = useCampaignStore((state) => state.campaigns);
+  const fetchCampaigns = useCampaignStore((state) => state.fetchCampaigns);
   const addCampaign = useCampaignStore((state) => state.addCampaign);
   const updateCampaign = useCampaignStore((state) => state.updateCampaign);
+  const [campaignName, setCampaignName] = useState('');
+  const [formData, setFormData] = useState({
+    from: '',
+    to: '',
+    subject: '',
+  });
+  const [savedText, setSavedText] = useState('');
+  const [isDialogVisible, setDialogVisible] = useState(false);
 
   useEffect(() => {
-    const campaign = campaigns.find((c) => c.name === campaignName);
+    fetchCampaigns();
+  }, [fetchCampaigns]);
+
+  useEffect(() => {
+    const campaign = campaigns.find((c) => c._id === id);
     if (campaign) {
-      setFormData(campaign);
+      setCampaignName(campaign.name);
+      setFormData({
+        from: campaign.from,
+        to: campaign.to,
+        subject: campaign.subject,
+      });
     }
-  }, [campaignName, campaigns]);
+  }, [campaigns, id]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -27,8 +42,11 @@ const CampaignForm = () => {
       alert('Please enter a campaign name');
       return;
     }
-    addCampaign({ name: campaignName, ...formData });
-    updateCampaign({ name: campaignName, ...formData });
+    if (id) {
+      updateCampaign({ _id: id, name: campaignName, ...formData });
+    } else {
+      addCampaign({ name: campaignName, ...formData });
+    }
     setSavedText(`From: ${formData.from}\nTo: ${formData.to}\nSubject: ${formData.subject}`);
   };
 
@@ -59,12 +77,12 @@ const CampaignForm = () => {
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}>
       <Typography variant="h4" component="h1" className="text-center mb-8 ">
-        Create Campaign
+        {id ? 'Edit Campaign' : 'Create Campaign'}
       </Typography>
-      <Card className="w-full max-w-md  ">
+      <Card className="w-full max-w-md">
         <CardContent className="bg-white text-black rounded-lg shadow-lg p-6">
           {!savedText && (
-            <form onSubmit={handleSubmit} className="space-y-4 ">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <TextField
                 id="campaignName"
                 name="campaignName"
@@ -74,7 +92,7 @@ const CampaignForm = () => {
                 value={campaignName}
                 onChange={(e) => setCampaignName(e.target.value)}
                 required
-                className="max-w-lg mx-auto bg-white rounded-xl shadow-2xl  text-black "
+                className="max-w-lg mx-auto bg-white rounded-xl shadow-2xl text-black"
               />
               <TextField
                 id="from"
@@ -85,7 +103,7 @@ const CampaignForm = () => {
                 value={formData.from}
                 onChange={handleChange}
                 required
-                className="max-w-lg mx-auto bg-white rounded-xl shadow-2xl  text-black "
+                className="max-w-lg mx-auto bg-white rounded-xl shadow-2xl text-black"
               />
               <TextField
                 id="to"
@@ -96,7 +114,7 @@ const CampaignForm = () => {
                 value={formData.to}
                 onChange={handleChange}
                 required
-                className="max-w-lg mx-auto bg-white rounded-xl shadow-2xl  text-black "
+                className="max-w-lg mx-auto bg-white rounded-xl shadow-2xl text-black"
               />
               <TextField
                 id="subject"
@@ -107,22 +125,44 @@ const CampaignForm = () => {
                 value={formData.subject}
                 onChange={handleChange}
                 required
-                className=" max-w-lg mx-auto bg-white rounded-xl shadow-2xl  text-black "
+                className="max-w-lg mx-auto bg-white rounded-xl shadow-2xl text-black"
               />
-              <Button type="submit" variant="contained" color="primary" fullWidth className='w-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-blue-100 pr-4 pl-4 "'>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                className="w-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-blue-100 pr-4 pl-4"
+              >
                 Save
               </Button>
             </form>
           )}
           {savedText && (
             <div className="text-center space-x-4 space-y-4">
-              <Typography variant="body1"><span className="font-bold">From:</span> {formData.from}</Typography>
-              <Typography variant="body1"><span className="font-bold">To:</span> {formData.to}</Typography>
-              <Typography variant="body1"><span className="font-bold">Subject:</span> {formData.subject}</Typography>
-              <Button variant="contained" color="primary" onClick={handleEdit} className="w-1/2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-blue-100  ">
+              <Typography variant="body1">
+                <span className="font-bold">From:</span> {formData.from}
+              </Typography>
+              <Typography variant="body1">
+                <span className="font-bold">To:</span> {formData.to}
+              </Typography>
+              <Typography variant="body1">
+                <span className="font-bold">Subject:</span> {formData.subject}
+              </Typography>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleEdit}
+                className="w-1/2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-blue-100"
+              >
                 Edit
               </Button>
-              <Button variant="contained" color="primary" onClick={handleCreateTemplate} className="w-1/2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-blue-100  ">
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleCreateTemplate}
+                className="w-1/2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-blue-100"
+              >
                 Generate Email Template
               </Button>
             </div>
