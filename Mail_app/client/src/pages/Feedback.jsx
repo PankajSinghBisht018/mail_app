@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Box, Typography, TextField, Modal, Container } from '@mui/material';
 import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
 
 const modalStyle = {
   position: 'absolute',
@@ -33,17 +34,18 @@ const Feedback = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/surveys', formData);
-      alert('Survey submitted successfully');
+      await axios.post('http://localhost:8000/api/surveys', formData);
+      toast.success('Survey submitted successfully');
       handleClose();
     } catch (error) {
-      alert('Error submitting survey');
+      toast.danger('Error submitting survey');
     }
   };
 
   return (
     <div className="bg-gradient-to-b from-purple-950 to-black min-h-screen flex justify-center">
       <Container className="flex flex-col mt-7" >
+      <ToastContainer position='top-right'/>
         <Typography variant="h3" className="text-center text-white">
           Submit Your Feedback To Us
         </Typography>
@@ -62,6 +64,7 @@ const Feedback = () => {
             <Typography variant="h6" component="h2" className="text-center mb-4">
               Feedback Form
             </Typography>
+            
             <form onSubmit={handleSubmit}>
               <TextField
                 label="Name"
