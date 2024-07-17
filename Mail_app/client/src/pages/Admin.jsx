@@ -1,14 +1,15 @@
 import React from 'react';
-import { Box,Toolbar, Drawer, List, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
-import { Home, People, Settings } from '@mui/icons-material';
-import { Navigate } from 'react-router-dom';
+import { Box, Toolbar, Drawer, List, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
+import { Home, People, Feedback } from '@mui/icons-material';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
-import { checkRole } from '../utils/roles'; 
+import { checkRole } from '../utils/roles';
 
 const drawerWidth = 240;
 
 const Admin = () => {
   const { isLoaded, isSignedIn } = useAuth();
+  const navigate = useNavigate();
 
   if (!isLoaded) {
     return <div>Loading...</div>;
@@ -31,23 +32,23 @@ const Admin = () => {
         <Toolbar />
         <Box sx={{ overflow: 'auto' }}>
           <List>
-            <ListItem component="button" >
+            <ListItem component="button" onClick={() => navigate('/')}>
               <ListItemIcon>
                 <Home />
               </ListItemIcon>
               <ListItemText primary="Home" />
             </ListItem>
-            <ListItem component="button" >
+            <ListItem component="button">
               <ListItemIcon>
                 <People />
               </ListItemIcon>
               <ListItemText primary="User Management" />
             </ListItem>
-            <ListItem component="button" >
+            <ListItem component="button" onClick={() => navigate('/feedback')}>
               <ListItemIcon>
-                <Settings />
+                <Feedback />
               </ListItemIcon>
-              <ListItemText primary="Settings" />
+              <ListItemText primary="Feedback" />
             </ListItem>
           </List>
         </Box>
