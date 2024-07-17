@@ -17,6 +17,7 @@ import Admin from './pages/Admin';
 import Developer from './pages/Developer';
 import ProtectedRoute from './components/ProtectedRoute';
 import { SignedIn } from '@clerk/clerk-react';
+import Feedback from './pages/Feedback';
 
 const App = () => {
   return (
@@ -41,6 +42,7 @@ const App = () => {
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/admin" element={<ProtectedRoute roles={['admin']}><Admin /></ProtectedRoute>} />
           <Route path="/developer" element={<ProtectedRoute roles={['developer']}><Developer /></ProtectedRoute>} />
+          <Route path="/feedback" element={<Feedback />} />
         </Routes> 
          </SignedIn>
         <Footer />
