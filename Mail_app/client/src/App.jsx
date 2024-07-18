@@ -18,34 +18,37 @@ import Developer from './pages/Developer';
 import ProtectedRoute from './components/ProtectedRoute';
 import { SignedIn } from '@clerk/clerk-react';
 import Feedback from './pages/Feedback';
+import FeedbackList from './pages/FeedbackList';
 
 const App = () => {
+  
   return (
     <Router>
       <div>
         <Navbar />
         <Routes>
-          <Route path="/" element={<Home />} /> 
+          <Route path="/" element={<Home />} />
         </Routes>
-          <SignedIn> 
+        <SignedIn>
           <Routes>
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/campaign" element={<Campaign />} />
-          <Route path="/pricing" element={<Pricing />} />
-          <Route path="/features" element={<Features />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/campaign-form" element={<CampaignForm />} /> 
-          <Route path="/campaign-form/:id" element={<CampaignForm />} />
-          <Route path="/all-campaigns" element={<CampaignsList />} />
-          <Route path="/create-template" element={<EmailTemplateCreator />} />
-          <Route path="/select-template" element={<SelectTemplate />} />
-          <Route path="/analytics" element={<Analytics />} />
-          <Route path="/admin" element={<ProtectedRoute roles={['admin']}><Admin /></ProtectedRoute>} />
-          <Route path="/developer" element={<ProtectedRoute roles={['developer']}><Developer /></ProtectedRoute>} />
-          <Route path="/feedback" element={<Feedback />} />
-        </Routes> 
-         </SignedIn>
-        <Footer />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/campaign" element={<Campaign />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/features" element={<Features />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/campaign-form" element={<CampaignForm />} />
+            <Route path="/campaign-form/:id" element={<CampaignForm />} />
+            <Route path="/all-campaigns" element={<CampaignsList />} />
+            <Route path="/create-template" element={<EmailTemplateCreator />} />
+            <Route path="/select-template" element={<SelectTemplate />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/admin" element={<ProtectedRoute roles={['admin']}><Admin /></ProtectedRoute>} />
+            <Route path="/developer" element={<ProtectedRoute roles={['developer']}><Developer /></ProtectedRoute>} />
+            <Route path="/feedback" element={<Feedback />} />
+            <Route path="/feedbacklist" element={<FeedbackList />} />
+          </Routes>
+        </SignedIn>
+     <Footer />
       </div>
     </Router>
   );
