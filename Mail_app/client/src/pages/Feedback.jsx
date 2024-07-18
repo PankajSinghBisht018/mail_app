@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, Box, Typography, TextField, Modal, Container } from '@mui/material';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
+import Rating from '@mui/material/Rating';
 
 const modalStyle = {
   position: 'absolute',
@@ -21,7 +22,8 @@ const Feedback = () => {
     name: '',
     subject: '',
     email: '',
-    message: ''
+    message: '',
+    rating: 0
   });
 
   const handleOpen = () => setOpen(true);
@@ -31,6 +33,10 @@ const Feedback = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleRatingChange = (event, newValue) => {
+    setFormData({ ...formData, rating: newValue });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -38,33 +44,32 @@ const Feedback = () => {
       toast.success('Survey submitted successfully');
       handleClose();
     } catch (error) {
-      toast.danger('Error submitting survey');
+      toast.error('Error submitting survey');
     }
   };
 
   return (
     <div className="bg-gradient-to-b from-purple-950 to-black min-h-screen flex justify-center">
-      <Container className="flex flex-col mt-7" >
-      <ToastContainer position='top-right'/>
+      <Container className="flex flex-col mt-7">
+        <ToastContainer position='top-right' />
         <Typography variant="h3" className="text-center text-white">
           Submit Your Feedback To Us
         </Typography>
-        <div className='flex justify-center mt-8'>
-        <Button
-          variant="contained"
-          onClick={handleOpen}
-          size="lg"
-          className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-md mt-5  "
-        >
-          Create a Survey
-        </Button>
+        <div className="flex justify-center mt-8">
+          <Button
+            variant="contained"
+            onClick={handleOpen}
+            size="lg"
+            className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-md mt-4"
+          >
+            Create a Survey
+          </Button>
         </div>
         <Modal open={open} onClose={handleClose}>
           <Box sx={modalStyle} className="bg-white rounded-lg p-6">
             <Typography variant="h6" component="h2" className="text-center mb-4">
               Feedback Form
             </Typography>
-            
             <form onSubmit={handleSubmit}>
               <TextField
                 label="Name"
@@ -100,6 +105,11 @@ const Feedback = () => {
                 margin="normal"
                 onChange={handleChange}
                 variant="outlined"
+              />
+              <Rating
+                name="rating"
+                value={formData.rating}
+                onChange={handleRatingChange}
               />
               <Button
                 type="submit"
