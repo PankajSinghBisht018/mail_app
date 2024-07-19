@@ -4,7 +4,6 @@ const nodemailer = require('nodemailer');
 const nodeCron = require('node-cron');
 const Email = require('../models/Email');
 
-
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -17,6 +16,9 @@ const emailTemplatePath = path.join(__dirname, '../templates/emailTemplate.html'
 
 const sendEmailNow = async (emailData) => {
   try {
+    if (!emailData.sender) {
+      throw new Error('Sender is required');
+    }
     const emailTemplate = fs.readFileSync(emailTemplatePath, 'utf8');
     const emailHtml = emailTemplate
       .replace('{{subject}}', emailData.subject)
@@ -72,6 +74,10 @@ const sendEmail = async (req, res) => {
   const { subject, body, sender, recipient, cc, bcc, scheduleDate } = req.body;
 
   try {
+    if (!subject || !body || !sender || !recipient) {
+      return res.status(400).json({ message: 'Subject, body, sender, and recipient are required' });
+    }
+
     const emailData = { subject, body, sender, recipient, cc, bcc };
 
     if (scheduleDate) {
