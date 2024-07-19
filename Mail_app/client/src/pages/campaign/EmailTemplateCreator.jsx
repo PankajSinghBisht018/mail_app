@@ -152,7 +152,7 @@ const EmailTemplateCreator = () => {
     }
 
     try {
-      const apiKey = process.env.REACT_APP_GOOGLE_API_KEY;
+      const apiKey = 'AIzaSyAZDaf7usmQ7am6FfWC7J367UKFLalBqUo';
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
       const prompt = `Generate a email template content paragraph at least 80 words on ${subject}.`;
