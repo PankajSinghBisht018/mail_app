@@ -40,7 +40,7 @@ const CampaignsList = () => {
         {campaigns.map((campaign) => (
           <li key={campaign._id} className="mb-4 flex items-center justify-center">
             <Link
-              to={`/campaign-form/${campaign._id}`}
+              to={`/campaign/campaign-form/${campaign._id}`}
               className="text-lg text-white text-center"
               style={{ textDecoration: 'none', width: '100%' }}
             >
