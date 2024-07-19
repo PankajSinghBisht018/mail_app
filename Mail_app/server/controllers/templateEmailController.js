@@ -63,6 +63,8 @@ const sendEmailTemplate = async (req, res) => {
   }
 };
 
+
+
 const getEmailEvents = async (req, res) => {
   try {
     const emailEvents = await EmailTemplate.find({});
@@ -94,7 +96,7 @@ cron.schedule('* * * * *', async () => {
   const now = new Date();
 
   try {
-    const emailsToSend = await EmailTemplate.find({ scheduledDate: { $lte: now }, sent: false, isScheduled: true });
+    const emailsToSend = await EmailTemplate.find({ scheduledDate: { $lte: now }, sent: false, isScheduled: true, canceled: false });
 
     emailsToSend.forEach(async (emailDetails) => {
       let transporter = nodemailer.createTransport({
@@ -111,6 +113,7 @@ cron.schedule('* * * * *', async () => {
         subject: emailDetails.subject,
         html: emailDetails.htmlContent,
       });
+
       console.log('Scheduled email sent: %s', info.messageId);
 
       emailDetails.messageId = info.messageId;
@@ -125,4 +128,64 @@ cron.schedule('* * * * *', async () => {
   }
 });
 
-module.exports = { sendEmailTemplate, getEmailEvents, getTemplateUsageCounts };
+const cancelEmailSchedule = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const email = await EmailTemplate.findById(id);
+    if (!email) {
+      return res.status(404).send({ message: 'Email not found' });
+    }
+    email.canceled = true;
+    email.sent = false; 
+    await email.save();
+
+    res.status(200).send({ message: 'Email schedule canceled successfully' });
+  } catch (error) {
+    console.error('Error canceling email:', error);
+    res.status(500).send({ message: 'Failed to cancel email', error });
+  }
+};
+
+const sendEmailNow = async (req, res) => {
+  const { id } = req.params;
+  
+  try {
+    const email = await EmailTemplate.findById(id);
+    if (!email) {
+      return res.status(404).send({ message: 'Email not found' });
+    }
+
+    if (email.canceled) {
+      return res.status(400).send({ message: 'Email is canceled and cannot be sent' });
+    }
+    
+    let transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    let info = await transporter.sendMail({
+      from: email.sender,
+      to: email.recipient,
+      subject: email.subject,
+      html: email.htmlContent,
+    });
+
+    email.messageId = info.messageId;
+    email.sentAt = new Date();
+    email.sent = true;
+    await email.save();
+
+    res.status(200).send({ message: 'Email sent successfully' });
+  } catch (error) {
+    console.error('Error sending email:', error);
+    res.status(500).send({ message: 'Failed to send email', error });
+  }
+};
+
+
+module.exports = { sendEmailTemplate, getEmailEvents, getTemplateUsageCounts,cancelEmailSchedule,sendEmailNow };
