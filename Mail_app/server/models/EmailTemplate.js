@@ -9,7 +9,9 @@ const emailTemplateSchema = new mongoose.Schema({
   sentAt: { type: Date },
   scheduledDate: { type: Date }, 
   isScheduled: { type: Boolean, default: false }, 
-  sent: { type: Boolean, default: false } 
+  sent: { type: Boolean, default: false } ,
+  canceled: { type: Boolean, default: false },
+  sentAt: Date,
 });
 
 module.exports = mongoose.model('EmailTemplate', emailTemplateSchema);
