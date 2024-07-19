@@ -64,11 +64,11 @@ const CampaignForm = () => {
   };
 
   const handleNewTemplate = () => {
-    navigate(`/create-template`, { state: { ...formData, campaignName, design: null } });
+    navigate(`/campaign/create-template`, { state: { ...formData, campaignName, design: null } });
   };
 
   const handleUseCustomTemplate = () => {
-    navigate(`/select-template`, { state: { ...formData, campaignName } });
+    navigate(`/campaign/select-template`, { state: { ...formData, campaignName } });
   };
 
   return (
