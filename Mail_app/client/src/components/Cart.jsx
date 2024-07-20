@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import useCartStore from '../store/useCartStore';
 import { motion } from 'framer-motion';
 import ShimmerButton from '@/components/magicui/shimmer-button';
-import { BorderBeam } from '@/components/magicui/border-beam';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Button from '@mui/material/Button';
@@ -78,7 +77,6 @@ const Cart = () => {
           ) : (
             <div className="overflow-x-auto">
               <div className="relative border bg-background">
-                <BorderBeam size={250} duration={12} delay={9} />
                 <table className="min-w-full bg-white border border-gray-200 rounded shadow">
                   <thead>
                     <tr className="bg-gray-100 border-b border-gray-200">
