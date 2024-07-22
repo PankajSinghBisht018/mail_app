@@ -45,6 +45,7 @@
     "shadcn": "^1.0.0",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",
+    "ua-parser-js": "^1.0.38",
     "ui-button": "^2.1.12",
     "vite-plugin-string": "^1.2.3",
     "yup": "^1.4.0",
