@@ -20,6 +20,7 @@ import { SignedIn } from '@clerk/clerk-react';
 import Feedback from './pages/Feedback';
 import FeedbackList from './pages/FeedbackList';
 import ScheduleMails from './pages/campaign/ScheduleMails';
+import DeviceAnalytics from './pages/DeviceAnalytics';
 
 const App = () => {
 
@@ -44,6 +45,7 @@ const App = () => {
               <Route path="select-template" element={<SelectTemplate />} /> 
               <Route path="schedulemails" element={<ScheduleMails />} />
               <Route path="analytics" element={<Analytics />} />
+              <Route path="Deviceanalytics" element={<DeviceAnalytics />} />
             </Route>
             <Route path="/admin" element={<ProtectedRoute roles={['admin']}><Admin /></ProtectedRoute>} />
             <Route path="/developer" element={<ProtectedRoute roles={['developer']}><Developer /></ProtectedRoute>} />
