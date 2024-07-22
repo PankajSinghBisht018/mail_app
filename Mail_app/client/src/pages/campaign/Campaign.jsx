@@ -25,6 +25,9 @@ const Campaign = () => {
     navigate('/campaign/schedulemails');
   };
 
+  const handleViewDeviceAnalytics=()=>{
+    navigate('/campaign/Deviceanalytics');
+  }
   const handleStart = () => {
     toast.info("click on create button");
   };
@@ -52,6 +55,10 @@ const Campaign = () => {
           <li className="p-4 cursor-pointer hover:bg-gray-200 flex items-center" onClick={handleViewAnalytics}>
             <i className="pi pi-chart-line text-2xl"></i>
             <span className="ml-2">Analytics</span>
+          </li>
+          <li className="p-4 cursor-pointer hover:bg-gray-200 flex items-center" onClick={handleViewDeviceAnalytics}>
+            <i className="pi pi-chart-line text-2xl"></i>
+            <span className="ml-2">Device Analytics</span>
           </li>
           <li className="p-4 cursor-pointer hover:bg-gray-200 flex items-center" onClick={handleViewScheduleMails}>
             <i className="pi pi-history text-2xl"></i>
