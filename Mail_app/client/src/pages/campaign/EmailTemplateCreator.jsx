@@ -4,7 +4,6 @@ import EmailEditor from 'react-email-editor';
 import sample from './savefile.json';
 import axios from 'axios';
 import SaveIcon from '@mui/icons-material/Save';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import SendIcon from '@mui/icons-material/Send';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -73,31 +72,39 @@ const EmailTemplateCreator = () => {
 
   const sendEmail = async () => {
     const { from, to, subject, campaignName } = location.state || {};
-
+  
     if (!from || !to || !subject || !campaignName) {
       console.error('Missing required data (from, to, subject, campaignName)');
       toast.error('Missing required data (from, to, subject, campaignName)');
       return;
     }
-
+  
     try {
       const { html, design } = await exportHtml();
-
-      axios.post('http://localhost:8000/api/temp-email', {
+  
+      const emailId = Date.now();
+      const htmlWithTrackingPixel = `${html}${trackingPixel(emailId, to)}`;
+  
+      const payload = {
         from,
         to,
         subject,
         campaignName,
-        htmlContent: html || '<p>Default email content goes here.</p>',
+        htmlContent: htmlWithTrackingPixel,
+        
         design: JSON.stringify(design),
         recipients: to.split(',').map((email) => email.trim()),
-      })
+      };
+  
+  console.log('Payload:', htmlWithTrackingPixel); 
+  
+      axios.post('http://localhost:8000/api/temp-email', payload)
         .then((response) => {
           console.log('Email sent successfully', response);
           toast.success('Email sent successfully');
         })
         .catch((error) => {
-          console.error('Error sending email', error);
+          console.error('Error sending email', error.response.data); 
           toast.error('Error sending email');
         });
     } catch (error) {
@@ -118,12 +125,15 @@ const EmailTemplateCreator = () => {
     try {
       const { html, design } = await exportHtml();
 
-      axios.post('http://localhost:8000/api/temp-email', {
+      const emailId = Date.now();
+      const htmlWithTrackingPixel = `${html}${trackingPixel(emailId, to)}`;
+
+      axios.post('http://localhost:8000/api/schedule-email', {
         from,
         to,
         subject,
         campaignName,
-        htmlContent: html || '<p>Default email content goes here.</p>',
+        htmlContent: htmlWithTrackingPixel,
         design: JSON.stringify(design),
         recipients: to.split(',').map((email) => email.trim()),
         scheduledDate,
@@ -143,6 +153,9 @@ const EmailTemplateCreator = () => {
     }
   };
 
+  const trackingPixel = (emailId, recipient) => 
+    `<img src="http://localhost:8000/api/track-email-open?emailId=${encodeURIComponent(emailId)}&recipient=${encodeURIComponent(recipient)}" width="1" height="1" alt="" style="display:none;" />`;
+
   const generateEmailContent = async () => {
     const { subject } = location.state || {};
 
@@ -154,7 +167,7 @@ const EmailTemplateCreator = () => {
     try {
       const genAI = new GoogleGenerativeAI('AIzaSyAZDaf7usmQ7am6FfWC7J367UKFLalBqUo');
       const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-      const prompt = `Generate a email template content paragraph at least 80 words on ${subject}.`;
+      const prompt = `Generate an email template content paragraph of at least 80 words on ${subject}.`;
       const result = await model.generateContent(prompt);
       const response = result.response;
       let text = response.text();
