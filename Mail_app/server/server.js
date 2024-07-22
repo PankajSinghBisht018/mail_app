@@ -7,6 +7,7 @@ const tempEmailRoutes = require('./routes/tempEmailRoutes');
 const campaignRoutes = require('./routes/campaignRoutes');
 const surveyRoutes = require('./routes/surveyRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const emailTrackingRoutes = require('./routes/emailTrackingRoutes');
 
 require('dotenv').config();
 
@@ -25,6 +26,7 @@ app.use('/api', tempEmailRoutes);
 app.use('/api', campaignRoutes);
 app.use('/api', surveyRoutes);
 app.use('/api', orderRoutes);
+app.use('/api', emailTrackingRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
