@@ -20,11 +20,12 @@ const Navbar = () => {
         <div className="hidden md:flex space-x-8">
           <SignedIn>
             <Link to="/" className="text-purple-900 text-xl font-bold hover:underline">Home</Link>
-            <Link to="/contact" className="text-purple-900 text-xl font-bold hover:underline">Contact</Link>
+            
             <Link to="/campaign" className="text-purple-900 text-xl font-bold hover:underline">Campaign</Link>
             <Link to="/pricing" className="text-purple-900 text-xl font-bold hover:underline">Pricing</Link>
             <Link to="/features" className="text-purple-900 text-xl font-bold hover:underline">Features</Link>
             <Link to="/cart" className="text-purple-900 text-xl font-bold hover:underline">Cart</Link>
+            <Link to="/contact" className="text-purple-900 text-xl font-bold hover:underline">Contact</Link>
             {isAdmin && (
               <Link to="/admin" className="text-purple-900 text-xl font-bold hover:underline">Admin</Link>
             )}

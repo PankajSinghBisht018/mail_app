@@ -2,23 +2,15 @@ const nodemailer = require('nodemailer');
 const EmailTemplate = require('../models/EmailTemplate');
 const cron = require('node-cron');
 
-
 const sendEmailTemplate = async (req, res) => {
   const { htmlContent, recipients, subject, from, scheduledDate } = req.body;
-
-
-  const trackingPixel = (emailId, recipient) => 
-    `<img src="http://localhost:8000/api/track-email-open?emailId=${encodeURIComponent(emailId)}&recipient=${encodeURIComponent(recipient)}" width="1" height="1" alt="" style="display:none;" />`;
-
-  const emailId = Date.now(); 
-  const htmlWithTrackingPixel = htmlContent + trackingPixel(emailId, recipients[0]);
 
   if (scheduledDate) {
     try {
       await Promise.all(recipients.map(async (recipient) => {
         const emailTemplate = new EmailTemplate({
           subject,
-          htmlContent: htmlWithTrackingPixel, 
+          htmlContent,
           recipient,
           sender: from,
           scheduledDate,
@@ -47,13 +39,13 @@ const sendEmailTemplate = async (req, res) => {
           from,
           to: recipient,
           subject,
-          html: htmlWithTrackingPixel, 
+          html: htmlContent,
         });
         console.log('Message sent: %s', info.messageId);
 
         const emailTemplate = new EmailTemplate({
           subject,
-          htmlContent: htmlWithTrackingPixel, 
+          htmlContent,
           recipient,
           sender: from,
           messageId: info.messageId,
@@ -70,6 +62,7 @@ const sendEmailTemplate = async (req, res) => {
     }
   }
 };
+
 
 
 const getEmailEvents = async (req, res) => {

@@ -57,7 +57,7 @@ const Campaign = () => {
             <span className="ml-2">Analytics</span>
           </li>
           <li className="p-4 cursor-pointer hover:bg-gray-200 flex items-center" onClick={handleViewDeviceAnalytics}>
-            <i className="pi pi-chart-line text-2xl"></i>
+            <i className="pi pi-mobile text-2xl"></i>
             <span className="ml-2">Device Analytics</span>
           </li>
           <li className="p-4 cursor-pointer hover:bg-gray-200 flex items-center" onClick={handleViewScheduleMails}>
