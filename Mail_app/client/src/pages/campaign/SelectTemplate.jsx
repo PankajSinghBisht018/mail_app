@@ -13,7 +13,7 @@ const SelectTemplate = () => {
   const { from, to, subject, campaignName } = location.state || {};
 
   const handleSelectTemplate = (template) => {
-    navigate('/campaign/create-template', {
+    navigate('/create-template', {
       state: {
         design: template.design,
         from,

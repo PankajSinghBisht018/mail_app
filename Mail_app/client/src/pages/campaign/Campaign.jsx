@@ -1,9 +1,10 @@
 import React from 'react';
 import { useNavigate, Outlet, useLocation } from 'react-router-dom';
-import { Button } from 'primereact/button';
+import { Button, IconButton } from '@mui/material';
 import { motion } from 'framer-motion';
 import { toast, ToastContainer } from 'react-toastify';
 import DonateUs from '../DonateUs';
+import DashboardIcon from '@mui/icons-material/Dashboard'; 
 
 const Campaign = () => {
   const navigate = useNavigate();
@@ -18,18 +19,19 @@ const Campaign = () => {
   };
 
   const handleViewAnalytics = () => {
-    navigate('/campaign/analytics');
+    navigate('/analytics');
   };
 
   const handleViewScheduleMails = () => {
     navigate('/campaign/schedulemails');
   };
 
-  const handleViewDeviceAnalytics=()=>{
+  const handleViewDeviceAnalytics = () => {
     navigate('/campaign/Deviceanalytics');
-  }
+  };
+
   const handleStart = () => {
-    toast.info("click on create button");
+    toast.info("Click on create button");
   };
 
   const isRootPath = location.pathname === '/campaign';
@@ -37,32 +39,38 @@ const Campaign = () => {
   return (
     <div className="flex">
       <motion.div
-        className="min-h-screen w-64 flex flex-col items-center bg-white text-black shadow-lg"
+        className="min-h-screen flex flex-col items-center bg-white text-black shadow-lg 
+                   w-16 md:w-64 transition-width duration-300 ease-in-out"
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <Button className="p-button-text p-button-plain p-0 m-4 text-lg font-bold" onClick={() => navigate('/campaign')}>Dashboard</Button>
+        <IconButton
+          className="p-2 m-2 text-lg "
+          onClick={() => navigate('/campaign')}
+        >
+          <DashboardIcon />
+        </IconButton>
         <ul className="p-2 w-full">
-          <li className="p-4 cursor-pointer hover:bg-gray-200 flex items-center" onClick={handleCreateCampaign}>
+          <li className="p-4 cursor-pointer hover:bg-gray-200 flex flex-col md:flex-row items-center" onClick={handleCreateCampaign}>
             <i className="pi pi-plus text-2xl"></i>
-            <span className="ml-2">Create Campaign</span>
+            <span className="ml-2 hidden md:inline">Create Campaign</span>
           </li>
-          <li className="p-4 cursor-pointer hover:bg-gray-200 flex items-center" onClick={handleViewCampaigns}>
+          <li className="p-4 cursor-pointer hover:bg-gray-200 flex flex-col md:flex-row items-center" onClick={handleViewCampaigns}>
             <i className="pi pi-list text-2xl"></i>
-            <span className="ml-2">Campaigns</span>
+            <span className="ml-2 hidden md:inline">Campaigns</span>
           </li>
-          <li className="p-4 cursor-pointer hover:bg-gray-200 flex items-center" onClick={handleViewAnalytics}>
+          <li className="p-4 cursor-pointer hover:bg-gray-200 flex flex-col md:flex-row items-center" onClick={handleViewAnalytics}>
             <i className="pi pi-chart-line text-2xl"></i>
-            <span className="ml-2">Analytics</span>
+            <span className="ml-2 hidden md:inline">Analytics</span>
           </li>
-          <li className="p-4 cursor-pointer hover:bg-gray-200 flex items-center" onClick={handleViewDeviceAnalytics}>
+          <li className="p-4 cursor-pointer hover:bg-gray-200 flex flex-col md:flex-row items-center" onClick={handleViewDeviceAnalytics}>
             <i className="pi pi-mobile text-2xl"></i>
-            <span className="ml-2">Device Analytics</span>
+            <span className="ml-2 hidden md:inline">Device Analytics</span>
           </li>
-          <li className="p-4 cursor-pointer hover:bg-gray-200 flex items-center" onClick={handleViewScheduleMails}>
+          <li className="p-4 cursor-pointer hover:bg-gray-200 flex flex-col md:flex-row items-center" onClick={handleViewScheduleMails}>
             <i className="pi pi-history text-2xl"></i>
-            <span className="ml-2">Schedule Mails</span>
+            <span className="ml-2 hidden md:inline">Schedule Mails</span>
           </li>
         </ul>
       </motion.div>
@@ -85,7 +93,11 @@ const Campaign = () => {
               Our Campaign To Donate the Money to the needy ones and help to improve their life. Your small contribution will help them fulfill their needs.
             </p>
             <ToastContainer position="bottom-right" />
-            <Button onClick={handleStart} className="bg-blue-500 text-white px-4 py-2 rounded mb-4 bg-gradient-to-r from-blue-500 to-purple-600">
+            <Button
+              onClick={handleStart}
+              variant='contained'
+              className="text-white  px-4 py-2 rounded mb-4 bg-gradient-to-r from-blue-500 to-purple-600"
+            >
               Start a Campaign
             </Button>
             <DonateUs />

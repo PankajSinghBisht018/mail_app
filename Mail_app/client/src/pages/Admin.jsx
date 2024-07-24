@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { Box, Toolbar, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import { Home, People, Feedback } from '@mui/icons-material';
+import { Box, Toolbar, Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton } from '@mui/material';
+import { Home, People, Feedback, Menu } from '@mui/icons-material';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
 import { checkRole } from '../utils/roles';
 import FeedbackList from './FeedbackList'; 
-
 
 const drawerWidth = 240;
 
@@ -13,6 +12,7 @@ const Admin = () => {
   const { isLoaded, isSignedIn } = useAuth();
   const navigate = useNavigate();
   const [currentComponent, setCurrentComponent] = useState(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   if (!isLoaded) {
     return <div>Loading...</div>;
@@ -21,6 +21,10 @@ const Admin = () => {
   if (!isSignedIn || !checkRole('admin')) {
     return <Navigate to="/" />;
   }
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
 
   const handleItemClick = (item) => {
     switch (item) {
@@ -33,42 +37,69 @@ const Admin = () => {
     }
   };
 
+  const drawer = (
+    <div>
+      <Toolbar />
+      <List>
+        <ListItem component='button' onClick={() => navigate('/')}>
+          <ListItemIcon>
+            <Home />
+          </ListItemIcon>
+          <ListItemText primary="Home" />
+        </ListItem>
+        <ListItem component='button'>
+          <ListItemIcon>
+            <People />
+          </ListItemIcon>
+          <ListItemText primary="User Management" />
+        </ListItem>
+        <ListItem component='button' onClick={() => handleItemClick('feedback')}>
+          <ListItemIcon>
+            <Feedback />
+          </ListItemIcon>
+          <ListItemText primary="Feedback" />
+        </ListItem>
+      </List>
+    </div>
+  );
+
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex' ,minHeight:'100vh' }}>
       <Drawer
         variant="permanent"
         sx={{
           width: drawerWidth,
           flexShrink: 0,
           [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+          display: { xs: 'none', sm: 'block' }, 
         }}
       >
-        <Toolbar />
-        <List>
-          <ListItem component='button' onClick={() => navigate('/')} >
-            <ListItemIcon>
-              <Home />
-            </ListItemIcon>
-            <ListItemText primary="Home" />
-          </ListItem>
-          <ListItem component='button' >
-            <ListItemIcon>
-              <People />
-            </ListItemIcon>
-            <ListItemText primary="User Management" />
-          </ListItem>
-          <ListItem component='button' onClick={() => handleItemClick('feedback')}>
-            <ListItemIcon>
-              <Feedback />
-            </ListItemIcon>
-            <ListItemText primary="Feedback" />
-          </ListItem>
-        </List>
+        {drawer}
+      </Drawer>
+      <Drawer
+        variant="temporary"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        sx={{
+          display: { xs: 'block', sm: 'none' }, 
+          '& .MuiDrawer-paper': { width: drawerWidth },
+        }}
+      >
+        {drawer}
       </Drawer>
       <Box
         component="main"
         sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
       >
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          edge="start"
+          sx={{ display: { xs: 'block', sm: 'none' }, mb: 2 }}
+          onClick={handleDrawerToggle}
+        >
+          <Menu />
+        </IconButton>
         {currentComponent}
       </Box>
     </Box>

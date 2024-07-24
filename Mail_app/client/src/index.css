@@ -67,3 +67,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+#email-editor-container {
+  width: 100%;
+  height: 80vh;
+  overflow: hidden;
+}

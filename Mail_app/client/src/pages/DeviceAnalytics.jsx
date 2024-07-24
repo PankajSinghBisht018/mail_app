@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Chart as ChartJS, BarElement, LineElement, CategoryScale, LinearScale, Title, Tooltip, Legend, LineController, BarController } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import { Container, Typography, Box } from '@mui/material';
 
 ChartJS.register(
   BarElement, 
@@ -35,7 +36,7 @@ const DeviceAnalytics = () => {
     ],
   });
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   setTimeout(() => setLoading(false), 1000);
 
   const options = {
@@ -72,16 +73,49 @@ const DeviceAnalytics = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '70vh', marginTop: '80px' }}>
-      <h2 style={{ textAlign: 'center', marginBottom: '20px',fontWeight:'bolder',fontSize:'35px'}}>Device Analytics</h2>
-      <div style={{ width: '80%', maxWidth: '800px', backgroundColor: 'white', padding: '20px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
-        {loading ? (
-          <p>Loading chart...</p>
-        ) : (
-          <Bar data={chartData} options={options} />
-        )}
-      </div>
-    </div>
+    <Container maxWidth="lg" sx={{ mt: 4 }}>
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: 'center', 
+          width: '100%', 
+          height: '70vh', 
+          p: 2 
+        }}
+      >
+        <Typography 
+          variant="h4" 
+          component="h2" 
+          sx={{ 
+            textAlign: 'center', 
+            mb: 3, 
+            fontWeight: 'bold', 
+            fontSize: { xs: '24px', sm: '28px', md: '32px', lg: '35px' } 
+          }}
+        >
+          Device Analytics
+        </Typography>
+        <Box 
+          sx={{ 
+            width: '100%', 
+            maxWidth: '800px', 
+            bgcolor: 'white', 
+            p: 2, 
+            borderRadius: '8px', 
+            boxShadow: 1,
+            display: 'flex', 
+            justifyContent: 'center' 
+          }}
+        >
+          {loading ? (
+            <Typography>Loading chart...</Typography>
+          ) : (
+            <Bar data={chartData} options={options} />
+          )}
+        </Box>
+      </Box>
+    </Container>
   );
 };
 

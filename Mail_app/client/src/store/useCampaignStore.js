@@ -1,10 +1,11 @@
 import {create} from 'zustand';
+import { API_URL } from '../services/helper';
 
 const useCampaignStore = create((set) => ({
   campaigns: [],
   addCampaign: async (campaign) => {
     try {
-      const response = await fetch('http://localhost:8000/api/campaigns', {
+      const response = await fetch(`${API_URL}/api/campaigns`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -21,7 +22,7 @@ const useCampaignStore = create((set) => ({
   },
   updateCampaign: async (updatedCampaign) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/campaigns/${updatedCampaign._id}`, {
+      const response = await fetch(`${API_URL}/api/campaigns/${updatedCampaign._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -40,7 +41,7 @@ const useCampaignStore = create((set) => ({
   },
   deleteCampaign: async (id) => {
     try {
-      await fetch(`http://localhost:8000/api/campaigns/${id}`, {
+      await fetch(`${API_URL}/api/campaigns/${id}`, {
         method: 'DELETE',
       });
       set((state) => ({
@@ -52,7 +53,7 @@ const useCampaignStore = create((set) => ({
   },
   fetchCampaigns: async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/campaigns');
+      const response = await fetch(`${API_URL}/api/campaigns`);
       const campaigns = await response.json();
       set({ campaigns });
     } catch (error) {

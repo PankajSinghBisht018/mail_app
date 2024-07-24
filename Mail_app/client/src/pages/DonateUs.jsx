@@ -7,6 +7,7 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import logo from './campainglogo.png';
+import { API_URL } from '../services/helper';
 
 const validationSchema = Yup.object().shape({
   donationAmount: Yup.number()
@@ -35,7 +36,7 @@ function DonateUs() {
 
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
     axios
-      .post('http://localhost:8000/api/donate', values)
+      .post(`${API_URL}/api/donate`, values)
       .then((response) => {
         console.log('Donation successful:', response.data);
         resetForm();

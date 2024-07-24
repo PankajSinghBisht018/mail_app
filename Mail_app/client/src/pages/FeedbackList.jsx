@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, List, ListItem, ListItemText, Rating } from '@mui/material';
 import axios from 'axios';
+import { API_URL } from '../services/helper'
 
 const FeedbackList = () => {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -8,7 +9,7 @@ const FeedbackList = () => {
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/surveys');
+        const response = await axios.get(`${API_URL}/api/surveys`);
         setFeedbacks(response.data);
       } catch (error) {
         console.error('Error fetching feedbacks', error);

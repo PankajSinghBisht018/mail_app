@@ -4,7 +4,6 @@ import EmailEditor from 'react-email-editor';
 import sample from './savefile.json';
 import axios from 'axios';
 import SaveIcon from '@mui/icons-material/Save';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import SendIcon from '@mui/icons-material/Send';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -14,6 +13,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { API_URL } from '../../services/helper';
 
 const EmailTemplateCreator = () => {
   const location = useLocation();
@@ -23,9 +23,13 @@ const EmailTemplateCreator = () => {
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
   const [scheduledDate, setScheduledDate] = useState(new Date());
 
+
   useEffect(() => {
     if (editorLoaded) {
       onLoad();
+      if (window.innerWidth < 768) {
+        toast.info('Edit on desktop for best experience');
+      }
     }
   }, [editorLoaded]);
 
@@ -41,6 +45,7 @@ const EmailTemplateCreator = () => {
       emailEditorRef.current.editor.loadDesign(sample);
     }
   };
+
 
   const exportHtml = () => {
     return new Promise((resolve, reject) => {
@@ -59,6 +64,7 @@ const EmailTemplateCreator = () => {
     });
   };
 
+
   const saveDesign = () => {
     if (emailEditorRef.current && emailEditorRef.current.editor) {
       emailEditorRef.current.editor.saveDesign((design) => {
@@ -70,6 +76,7 @@ const EmailTemplateCreator = () => {
       toast.error('Email editor is not ready.');
     }
   };
+
 
   const sendEmail = async () => {
     const { from, to, subject, campaignName } = location.state || {};
@@ -83,7 +90,7 @@ const EmailTemplateCreator = () => {
     try {
       const { html, design } = await exportHtml();
 
-      axios.post('http://localhost:8000/api/temp-email', {
+      axios.post(`${API_URL}/api/temp-email`, {
         from,
         to,
         subject,
@@ -118,7 +125,7 @@ const EmailTemplateCreator = () => {
     try {
       const { html, design } = await exportHtml();
 
-      axios.post('http://localhost:8000/api/temp-email', {
+      axios.post(`${API_URL}/api/temp-email`, {
         from,
         to,
         subject,
@@ -154,7 +161,7 @@ const EmailTemplateCreator = () => {
     try {
       const genAI = new GoogleGenerativeAI('AIzaSyAZDaf7usmQ7am6FfWC7J367UKFLalBqUo');
       const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-      const prompt = `Generate a email template content paragraph at least 80 words on ${subject}.`;
+      const prompt = `Generate an email template content paragraph at least 80 words on ${subject}.`;
       const result = await model.generateContent(prompt);
       const response = result.response;
       let text = response.text();
@@ -176,92 +183,117 @@ const EmailTemplateCreator = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-4 text-center">Email Template Editor</h1>
-      <div className="mb-4 flex justify-center items-center">
-        <EmailEditor ref={emailEditorRef} onLoad={handleEditorLoad} minHeight="70vh" />
-      </div>
-
-      <div className="flex justify-center space-x-4">
-        <Button
-          onClick={saveDesign}
-          variant="contained"
-          startIcon={<SaveIcon />}
-          className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md"
-        >
-          Save Design
-        </Button>
-        <Button
-          onClick={sendEmail}
-          variant="contained"
-          startIcon={<SendIcon />}
-          className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md"
-        >
-          Send Email
-        </Button>
-        <Button
-          onClick={generateEmailContent}
-          variant="contained"
-          startIcon={<PsychologyIcon />}
-          className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md"
-        >
-          Generate Email Content
-        </Button>
-        <Button
-          onClick={() => setScheduleDialogOpen(true)}
-          variant="contained"
-          startIcon={<ScheduleIcon />}
-          className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md"
-        >
-          Schedule Email
-        </Button>
-      </div>
-
-      {generatedContent && (
-        <div className="mt-8 flex flex-col space-y-5">
-          <div className="flex justify-between">
-            <h2 className="text-xl font-bold mb-4 text-left">Generated Email Content:</h2>
-            <Button
-              onClick={copyToClipboard}
-              variant="contained"
-              startIcon={<ContentCopyIcon />}
-              className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md"
-            >
-              Copy Content
-            </Button>
-          </div>
-          <div
-            className="bg-opacity-80 bg-black text-white p-4 rounded-lg font-bold min-h-fit"
-            style={{ whiteSpace: 'pre-line' }}
-          >
-            <p>{generatedContent}</p>
+    <div className="min-h-screen bg-gradient-to-r from-black via-purple-800 to-black text-white">
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-4 text-center">Email Template Editor</h1>
+        <div className="mb-4 flex justify-center items-center">
+          <div id="email-editor-container">
+            <EmailEditor
+              ref={emailEditorRef}
+              onLoad={handleEditorLoad}
+              minHeight="70vh"
+              className="w-full"
+              options={{
+                appearance: {
+                  theme: 'modern_dark',
+                  panels: {
+                    tools: {
+                      dock: 'left',
+                    },
+                  },
+                },
+                features: {
+                  imageEditor: false,
+                  undoRedo: true,
+                },
+              }}
+            />
           </div>
         </div>
-      )}
 
-      <Dialog open={scheduleDialogOpen} onClose={() => setScheduleDialogOpen(false)}>
-        <DialogTitle>Schedule Email</DialogTitle>
-        <DialogContent>
-          <DatePicker
-            selected={scheduledDate}
-            onChange={(date) => setScheduledDate(date)}
-            showTimeSelect
-            dateFormat="Pp"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setScheduleDialogOpen(false)} variant='contained' className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white">
-            Cancel
+        <div className="flex flex-wrap justify-center gap-4 mb-8">
+          <Button
+            onClick={saveDesign}
+            variant="contained"
+            startIcon={<SaveIcon />}
+            className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white"
+          >
+            Save Design
           </Button>
-          <Button onClick={scheduleEmail} variant='contained' className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white">
-            Schedule
+          <Button
+            onClick={sendEmail}
+            variant="contained"
+            startIcon={<SendIcon />}
+            className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white"
+          >
+            Send Email
           </Button>
-        </DialogActions>
-      </Dialog>
+          <Button
+            onClick={generateEmailContent}
+            variant="contained"
+            startIcon={<PsychologyIcon />}
+            className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white"
+          >
+            Generate Email Content
+          </Button>
+          <Button
+            onClick={() => setScheduleDialogOpen(true)}
+            variant="contained"
+            startIcon={<ScheduleIcon />}
+            className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white"
+          >
+            Schedule Email
+          </Button>
+        </div>
 
-      <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false} />
+        {generatedContent && (
+          <div className="mt-8 flex flex-col space-y-5">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-bold">Generated Email Content:</h2>
+              <Button
+                onClick={copyToClipboard}
+                variant="contained"
+                startIcon={<ContentCopyIcon />}
+                className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white"
+              >
+                Copy Content
+              </Button>
+            </div>
+            <div
+              className="bg-opacity-80 bg-black text-white p-4 rounded-lg font-bold"
+              style={{ whiteSpace: 'pre-line' }}
+            >
+              <p>{generatedContent}</p>
+            </div>
+          </div>
+        )}
+
+        <Dialog open={scheduleDialogOpen} onClose={() => setScheduleDialogOpen(false)} maxWidth="sm" fullWidth>
+          <DialogTitle>Schedule Email</DialogTitle>
+          <DialogContent>
+            <DatePicker
+              selected={scheduledDate}
+              onChange={(date) => setScheduledDate(date)}
+              showTimeSelect
+              dateFormat="Pp"
+              className="w-full"
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setScheduleDialogOpen(false)} variant='contained' className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white">
+              Cancel
+            </Button>
+            <Button onClick={scheduleEmail} variant='contained' className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white">
+              Schedule
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <ToastContainer position="bottom-left" autoClose={3000} hideProgressBar={false} />
+      </div>
     </div>
   );
 };
 
 export default EmailTemplateCreator;
+

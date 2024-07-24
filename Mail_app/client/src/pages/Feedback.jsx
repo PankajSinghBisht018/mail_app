@@ -3,6 +3,7 @@ import { Button, Box, Typography, TextField, Modal, Container } from '@mui/mater
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import Rating from '@mui/material/Rating';
+import { API_URL } from '../services/helper';
 
 const modalStyle = {
   position: 'absolute',
@@ -40,7 +41,7 @@ const Feedback = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8000/api/surveys', formData);
+      await axios.post(`${API_URL}/api/surveys`, formData);
       toast.success('Survey submitted successfully');
       handleClose();
     } catch (error) {

@@ -7,6 +7,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import "react-toastify/dist/ReactToastify.css";
 import { motion } from 'framer-motion';
+import { API_URL } from '../../services/helper';
 
 const ScheduleMails = () => {
   const [scheduledEmails, setScheduledEmails] = useState([]);
@@ -17,7 +18,7 @@ const ScheduleMails = () => {
 
   const fetchScheduledEmails = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/api/email-events');
+      const response = await axios.get(`${API_URL}/api/email-events`);
       setScheduledEmails(response.data);
     } catch (error) {
       toast.error('Failed to fetch scheduled emails');
@@ -26,7 +27,7 @@ const ScheduleMails = () => {
 
   const handleCancelSchedule = async (id) => {
     try {
-      await axios.post(`http://localhost:8000/api/cancel-email/${id}`);
+      await axios.post(`${API_URL}/api/cancel-email/${id}`);
       toast.success('Email schedule canceled');
       fetchScheduledEmails();
     } catch (error) {
@@ -36,7 +37,7 @@ const ScheduleMails = () => {
 
   const handleSendNow = async (id) => {
     try {
-      await axios.post(`http://localhost:8000/api/send-now/${id}`);
+      await axios.post(`${API_URL}/api/send-now/${id}`);
       toast.success('Email sent immediately');
       fetchScheduledEmails();
     } catch (error) {

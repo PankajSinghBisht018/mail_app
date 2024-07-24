@@ -9,6 +9,7 @@ import { Toast } from 'primereact/toast';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
+import { API_URL } from '../services/helper';
 
 const EmailForm = () => {
   const [emailData, setEmailData] = useState({
@@ -34,7 +35,7 @@ const EmailForm = () => {
 
   const handleSendNow = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/api/send-email', {
+      const response = await axios.post(`${API_URL}/api/send-email`, {
         ...emailData,
         sender: user ? user.primaryEmailAddress : '',
         scheduleDate: null,
@@ -53,7 +54,7 @@ const EmailForm = () => {
 
   const handleSchedule = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/api/send-email', emailData);
+      const response = await axios.post(`${API_URL}/api/send-email`, emailData);
       if (response.data.message) {
           showToast('success', 'Success', response.data.message); 
         resetForm();

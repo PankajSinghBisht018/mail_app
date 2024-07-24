@@ -6,6 +6,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Button from '@mui/material/Button';
 import axios from 'axios'; 
+import { API_URL } from '../services/helper';
 
 const Cart = () => {
   const cartItems = useCartStore((state) => state.cartItems);
@@ -34,7 +35,7 @@ const Cart = () => {
     try {
       const amountInPaise = cartItems.reduce((acc, item) => acc + item.price, 0);
 
-      const { data } = await axios.post('http://localhost:8000/api/create-order', {
+      const { data } = await axios.post(`${API_URL}/api/create-order`, {
         amount: amountInPaise,
         currency: 'INR',
         items: cartItems,
@@ -70,27 +71,27 @@ const Cart = () => {
   return (
     <>
       <motion.div className='bg-gradient-to-r from-purple-900 to-black min-h-screen'>
-        <div className="container mx-auto py-12 px-24">
-          <h2 className="text-3xl font-bold text-center mb-8 text-white">Shopping Cart</h2>
+        <div className="container mx-auto py-6 px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-center mb-6 text-white">Shopping Cart</h2>
           {cartItems.length === 0 ? (
-            <p className="text-2xl text-center text-white">Your cart is empty.</p>
+            <p className="text-xl text-center text-white">Your cart is empty.</p>
           ) : (
             <div className="overflow-x-auto">
-              <div className="relative border bg-background">
-                <table className="min-w-full bg-white border border-gray-200 rounded shadow">
-                  <thead>
-                    <tr className="bg-gray-100 border-b border-gray-200">
-                      <th className="text-left py-2 px-4">Item</th>
-                      <th className="text-left py-2 px-4">Price</th>
-                      <th className="text-left py-2 px-4">Actions</th>
+              <div className="relative border bg-background rounded-lg shadow-md">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-900">Item</th>
+                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-900">Price</th>
+                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-900">Actions</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="bg-white divide-y divide-gray-200">
                     {cartItems.map((item) => (
-                      <tr key={item.id} className="border-b border-gray-200">
-                        <td className="py-2 px-4">{item.title}</td>
-                        <td className="py-2 px-4">₹{item.price}</td>
-                        <td className="py-2 px-4">
+                      <tr key={item.id}>
+                        <td className="px-4 py-2 text-sm font-medium text-gray-900">{item.title}</td>
+                        <td className="px-4 py-2 text-sm text-gray-700">₹{item.price}</td>
+                        <td className="px-4 py-2 text-sm">
                           <Button
                             variant="contained"
                             color="error"
@@ -106,9 +107,9 @@ const Cart = () => {
               </div>
             </div>
           )}
-          <div className="flex justify-end mt-7">
+          <div className="flex justify-end mt-6">
             <ShimmerButton className="shadow-2xl p-button p-button-success" onClick={handlePlaceOrder}>
-              <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white">
+              <span className="whitespace-nowrap text-sm font-medium text-white">
                 Place Order
               </span>
             </ShimmerButton>

@@ -41,12 +41,12 @@ const App = () => {
               <Route path="campaign-form" element={<CampaignForm />} />
               <Route path="campaign-form/:id" element={<CampaignForm />} />
               <Route path="all-campaigns" element={<CampaignsList />} />
-              <Route path="create-template" element={<EmailTemplateCreator />} />
               <Route path="select-template" element={<SelectTemplate />} /> 
               <Route path="schedulemails" element={<ScheduleMails />} />
-              <Route path="analytics" element={<Analytics />} />
               <Route path="Deviceanalytics" element={<DeviceAnalytics />} />
-            </Route>
+            </Route> 
+            <Route path="/create-template" element={<EmailTemplateCreator />} />
+            <Route path="/analytics" element={<Analytics />} />
             <Route path="/admin" element={<ProtectedRoute roles={['admin']}><Admin /></ProtectedRoute>} />
             <Route path="/developer" element={<ProtectedRoute roles={['developer']}><Developer /></ProtectedRoute>} />
             <Route path="/feedback" element={<Feedback />} />

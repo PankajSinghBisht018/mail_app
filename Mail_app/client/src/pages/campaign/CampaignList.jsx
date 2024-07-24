@@ -35,13 +35,13 @@ const CampaignsList = () => {
 
   return (
     <div className="flex-1 min-h-screen bg-gradient-to-b from-black to-purple-900 text-white p-4">
-      <h1 className="text-4xl font-bold mb-8 text-center">All Campaigns</h1>
+      <h1 className="text-3xl md:text-4xl font-bold mb-6 text-center">All Campaigns</h1>
       <ul className="list-none p-0 text-center">
         {campaigns.map((campaign) => (
-          <li key={campaign._id} className="mb-4 flex items-center justify-center">
+          <li key={campaign._id} className="mb-4 flex flex-col sm:flex-row items-center justify-center">
             <Link
               to={`/campaign/campaign-form/${campaign._id}`}
-              className="text-lg text-white text-center"
+              className="text-base sm:text-lg text-white text-center mb-2 sm:mb-0"
               style={{ textDecoration: 'none', width: '100%' }}
             >
               {campaign.name}
@@ -60,18 +60,38 @@ const CampaignsList = () => {
           </li>
         ))}
       </ul>
-      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>Confirm Deletion</DialogTitle>
+      <Dialog
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        fullWidth
+        maxWidth="sm"
+        PaperProps={{
+          style: {
+            borderRadius: '12px',
+            padding: '16px',
+            backgroundColor: '#282c34', 
+          },
+        }}
+      >
+        <DialogTitle sx={{ color: 'white' }}>Confirm Deletion</DialogTitle>
         <DialogContent>
-          <DialogContentText>
+          <DialogContentText sx={{ color: 'white' }}>
             Are you sure you want to delete the campaign "{selectedCampaign?.name}"? This action cannot be undone.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} variant='contained' className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white">
+          <Button
+            onClick={handleCloseDialog}
+            variant="contained"
+            className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white"
+          >
             Cancel
           </Button>
-          <Button onClick={handleConfirmDelete}  variant="contained" className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white">
+          <Button
+            onClick={handleConfirmDelete}
+            variant="contained"
+            className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white"
+          >
             Confirm
           </Button>
         </DialogActions>
