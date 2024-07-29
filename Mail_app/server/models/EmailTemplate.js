@@ -11,6 +11,7 @@ const emailTemplateSchema = new mongoose.Schema({
   isScheduled: { type: Boolean, default: false },
   sent: { type: Boolean, default: false },
   canceled: { type: Boolean, default: false },
+  userId: { type:String , required: true }
 });
 
 module.exports = mongoose.model('EmailTemplate', emailTemplateSchema);
