@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Box, Toolbar, Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton } from '@mui/material';
-import { Home, People, Feedback, Menu } from '@mui/icons-material';
+import { Home, People, Feedback, Menu, Campaign } from '@mui/icons-material';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
 import { checkRole } from '../utils/roles';
-import FeedbackList from './FeedbackList'; 
+import FeedbackList from './FeedbackList';
+import UserManagement from './UserManagement';
+import AllCampaign from './AllCampaign';
 
 const drawerWidth = 240;
 
@@ -31,6 +33,12 @@ const Admin = () => {
       case 'feedback':
         setCurrentComponent(<FeedbackList />);
         break;
+      case 'user-management':
+        setCurrentComponent(<UserManagement />);
+        break;
+      case 'campaign':
+        setCurrentComponent(<AllCampaign />);
+        break;
       default:
         setCurrentComponent(null);
         break;
@@ -41,19 +49,41 @@ const Admin = () => {
     <div>
       <Toolbar />
       <List>
-        <ListItem component='button' onClick={() => navigate('/')}>
+        <ListItem
+          className="hover:bg-yellow-100"
+          component='button'
+          onClick={() => navigate('/')}
+        >
           <ListItemIcon>
             <Home />
           </ListItemIcon>
           <ListItemText primary="Home" />
         </ListItem>
-        <ListItem component='button'>
+        <ListItem
+          className="hover:bg-yellow-100"
+          component='button'
+          onClick={() => handleItemClick('user-management')}
+        >
           <ListItemIcon>
             <People />
           </ListItemIcon>
           <ListItemText primary="User Management" />
         </ListItem>
-        <ListItem component='button' onClick={() => handleItemClick('feedback')}>
+        <ListItem
+          className="hover:bg-yellow-100"
+          component='button'
+          onClick={() => handleItemClick('campaign')}
+        >
+          <ListItemIcon>
+            <Campaign />
+          </ListItemIcon>
+          <ListItemText primary="Campaign" />
+        </ListItem>
+        <ListItem
+          className="hover:bg-yellow-100"
+          component='button'
+          onClick={() => handleItemClick('feedback')}
+        >
           <ListItemIcon>
             <Feedback />
           </ListItemIcon>
@@ -64,14 +94,14 @@ const Admin = () => {
   );
 
   return (
-    <Box sx={{ display: 'flex' ,minHeight:'100vh' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <Drawer
         variant="permanent"
         sx={{
           width: drawerWidth,
           flexShrink: 0,
           [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
-          display: { xs: 'none', sm: 'block' }, 
+          display: { xs: 'none', sm: 'block' },
         }}
       >
         {drawer}
@@ -81,7 +111,7 @@ const Admin = () => {
         open={mobileOpen}
         onClose={handleDrawerToggle}
         sx={{
-          display: { xs: 'block', sm: 'none' }, 
+          display: { xs: 'block', sm: 'none' },
           '& .MuiDrawer-paper': { width: drawerWidth },
         }}
       >

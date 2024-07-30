@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Box, Toolbar, Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton } from '@mui/material';
+import { Box, Toolbar, Drawer, List, ListItem, ListItemText, IconButton, Typography } from '@mui/material';
 import { Home, Api, Menu } from '@mui/icons-material';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
 import { checkRole } from '../utils/roles';
+import GridPattern from '@/components/magicui/grid-pattern';
 
 const drawerWidth = 240;
 
@@ -27,16 +28,23 @@ const Developer = () => {
     <div>
       <Toolbar />
       <List>
-        <ListItem component='button' onClick={() => window.location.href = '/'}>
-          <ListItemIcon>
+        <ListItem
+          className="hover:bg-yellow-100"
+          component='button'
+          onClick={() => window.location.href = '/'}
+        >
+          <IconButton className="text-yellow-500">
             <Home />
-          </ListItemIcon>
+          </IconButton>
           <ListItemText primary="Home" />
         </ListItem>
-        <ListItem component='button'>
-          <ListItemIcon>
+        <ListItem
+          className="hover:bg-yellow-100"
+          component='button'
+        >
+          <IconButton className="text-yellow-500">
             <Api />
-          </ListItemIcon>
+          </IconButton>
           <ListItemText primary="API Integration" />
         </ListItem>
       </List>
@@ -44,14 +52,17 @@ const Developer = () => {
   );
 
   return (
-    <Box sx={{ display: 'flex' ,minHeight:'100vh'}}>
+    <Box sx={{ display: 'flex', minHeight: '100vh', position: 'relative' }}>
+      <GridPattern />
       <Drawer
         variant="permanent"
         sx={{
           width: drawerWidth,
           flexShrink: 0,
           [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
-          display: { xs: 'none', sm: 'block' }, 
+          display: { xs: 'none', sm: 'block' },
+          backgroundColor: 'white',
+          borderRight: '1px solid #ccc',
         }}
       >
         {drawer}
@@ -69,7 +80,12 @@ const Developer = () => {
       </Drawer>
       <Box
         component="main"
-        sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
+        sx={{
+          flexGrow: 1,
+          bgcolor: 'background.default',
+          p: 3,
+          zIndex: 1,
+        }}
       >
         <IconButton
           color="inherit"
@@ -80,7 +96,13 @@ const Developer = () => {
         >
           <Menu />
         </IconButton>
-        <h1>This page is under process</h1>
+        <GridPattern />
+        <Typography variant="h4" gutterBottom>
+          Developer Dashboard
+        </Typography>
+        <Typography variant="body1">
+          This page is under process
+        </Typography>
       </Box>
     </Box>
   );

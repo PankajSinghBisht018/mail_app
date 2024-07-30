@@ -4,7 +4,9 @@ import { Line, Doughnut } from 'react-chartjs-2';
 import { TrendingUp } from 'lucide-react';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Tooltip, Legend, Title, TimeScale, Filler } from 'chart.js';
 import 'chartjs-adapter-date-fns';
-import { API_URL } from '../services/helper'
+import GridPattern from '@/components/magicui/grid-pattern';
+import { Skeleton } from '@/components/ui/skeleton'; 
+import { API_URL } from '../services/helper';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Tooltip, Legend, Title, TimeScale, Filler);
 
@@ -12,20 +14,23 @@ const Analytics = () => {
   const [emailEvents, setEmailEvents] = useState([]);
   const [templateUsageCounts, setTemplateUsageCounts] = useState([]);
   const [surveyData, setSurveyData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [emailRes, templateRes, surveyRes] = await Promise.all([
-          axios.get(`${API_URL}/api/email-events`),
+          axios.get(`${API_URL}/api/email-graph`),
           axios.get(`${API_URL}/api/template-usage-counts`),
           axios.get(`${API_URL}/api/surveys`)
         ]);
         setEmailEvents(emailRes.data);
         setTemplateUsageCounts(templateRes.data);
         setSurveyData(surveyRes.data);
+        setLoading(false); 
       } catch (error) {
         console.error('Error fetching data:', error);
+        setLoading(false); 
       }
     };
     fetchData();
@@ -95,29 +100,42 @@ const Analytics = () => {
   const feedbackData = formatFeedbackData();
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-r from-purple-950 to-black text-white">
-      <div className="max-w-6xl w-full p-5">
+    <div className="relative min-h-screen bg-white text-black">
+      <GridPattern/>
+      <div className="relative z-10 p-5">
         <div className="flex items-center mb-8">
           <TrendingUp className="mr-2 text-blue-500" />
           <h1 className="text-4xl font-bold">Email Analytics</h1>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-white text-black rounded-lg shadow-lg p-5">
+          <div className="bg-black text-white rounded-lg shadow-lg p-5">
             <h2 className="text-xl font-bold mb-4">Emails Sent Over Time (Hourly)</h2>
             <div className="relative h-72">
-              <Line data={lineChartData} options={{ maintainAspectRatio: false, scales: { x: { type: 'linear', title: { display: true, text: 'Hour of the Day' } }, y: { title: { display: true, text: 'Total Emails Sent' }, beginAtZero: true, stepSize: 15 } }, plugins: { legend: { display: true } } }} />
+              {loading ? (
+                <Skeleton className="h-full w-full bg-gray-400" />
+              ) : (
+                <Line data={lineChartData} options={{ maintainAspectRatio: false, scales: { x: { type: 'linear', title: { display: true, text: 'Hour of the Day' } }, y: { title: { display: true, text: 'Total Emails Sent' }, beginAtZero: true, stepSize: 15 } }, plugins: { legend: { display: true } } }} />
+              )}
             </div>
           </div>
-          <div className="bg-white text-black rounded-lg shadow-lg p-5">
+          <div className="bg-black text-white rounded-lg shadow-lg p-5">
             <h2 className="text-xl font-bold mb-4">Template Usage</h2>
             <div className="relative h-72">
-              <Doughnut data={pieChartData} options={{ maintainAspectRatio: false }} />
+              {loading ? (
+                <Skeleton className="h-full w-full bg-gray-400" />
+              ) : (
+                <Doughnut data={pieChartData} options={{ maintainAspectRatio: false }} />
+              )}
             </div>
           </div>
-          <div className="bg-white text-black rounded-lg shadow-lg p-5 md:col-span-2">
+          <div className="bg-black text-white rounded-lg shadow-lg p-5 md:col-span-2">
             <h2 className="text-xl font-bold mb-4">User Feedback Ratings</h2>
             <div className="relative h-96">
-              <Line data={feedbackData} options={{ maintainAspectRatio: false, scales: { y: { type: 'linear', beginAtZero: true, position: 'left', id: 'ratings', title: { display: true, text: 'Ratings' }, ticks: { stepSize: 1, min: 0, max: 5 } }, y1: { type: 'linear', beginAtZero: true, position: 'right', id: 'counts', grid: { drawOnChartArea: false }, title: { display: true, text: 'Counts' }, ticks: { stepSize: 1, min: 0 } } }, plugins: { tooltip: { callbacks: { label: function (tooltipItem) { return tooltipItem.dataset.label + ': ' + tooltipItem.raw.toFixed(0); } } }, legend: { position: 'bottom' } } }} />
+              {loading ? (
+                <Skeleton className="h-full w-full bg-gray-400" />
+              ) : (
+                <Line data={feedbackData} options={{ maintainAspectRatio: false, scales: { y: { type: 'linear', beginAtZero: true, position: 'left', id: 'ratings', title: { display: true, text: 'Ratings' }, ticks: { stepSize: 1, min: 0, max: 5 } }, y1: { type: 'linear', beginAtZero: true, position: 'right', id: 'counts', grid: { drawOnChartArea: false }, title: { display: true, text: 'Counts' }, ticks: { stepSize: 1, min: 0 } } }, plugins: { tooltip: { callbacks: { label: function (tooltipItem) { return tooltipItem.dataset.label + ': ' + tooltipItem.raw.toFixed(0); } } }, legend: { position: 'bottom' } } }} />
+              )}
             </div>
           </div>
         </div>
