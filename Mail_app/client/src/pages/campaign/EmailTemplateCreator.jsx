@@ -8,12 +8,15 @@ import SendIcon from '@mui/icons-material/Send';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ScheduleIcon from '@mui/icons-material/Schedule';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { API_URL } from '../../services/helper';
+import GridPattern from '@/components/magicui/grid-pattern';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { useUser, useAuth } from '@clerk/clerk-react';
 
 const EmailTemplateCreator = () => {
   const location = useLocation();
@@ -22,7 +25,8 @@ const EmailTemplateCreator = () => {
   const [generatedContent, setGeneratedContent] = useState('');
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
   const [scheduledDate, setScheduledDate] = useState(new Date());
-
+  const { user } = useUser();
+  const { getToken } = useAuth();
 
   useEffect(() => {
     if (editorLoaded) {
@@ -46,7 +50,6 @@ const EmailTemplateCreator = () => {
     }
   };
 
-
   const exportHtml = () => {
     return new Promise((resolve, reject) => {
       if (emailEditorRef.current && emailEditorRef.current.editor) {
@@ -64,7 +67,6 @@ const EmailTemplateCreator = () => {
     });
   };
 
-
   const saveDesign = () => {
     if (emailEditorRef.current && emailEditorRef.current.editor) {
       emailEditorRef.current.editor.saveDesign((design) => {
@@ -77,76 +79,81 @@ const EmailTemplateCreator = () => {
     }
   };
 
-
   const sendEmail = async () => {
     const { from, to, subject, campaignName } = location.state || {};
+    const userId = user.id;
+    const token = await getToken(); 
 
-    if (!from || !to || !subject || !campaignName) {
-      console.error('Missing required data (from, to, subject, campaignName)');
-      toast.error('Missing required data (from, to, subject, campaignName)');
+    if (!from || !to || !subject || !campaignName || !userId) {
+      toast.error('Missing required data');
       return;
     }
 
     try {
       const { html, design } = await exportHtml();
 
-      axios.post(`${API_URL}/api/temp-email`, {
-        from,
-        to,
-        subject,
-        campaignName,
-        htmlContent: html || '<p>Default email content goes here.</p>',
-        design: JSON.stringify(design),
-        recipients: to.split(',').map((email) => email.trim()),
-      })
-        .then((response) => {
-          console.log('Email sent successfully', response);
-          toast.success('Email sent successfully');
-        })
-        .catch((error) => {
-          console.error('Error sending email', error);
-          toast.error('Error sending email');
-        });
+      await axios.post(
+        `${API_URL}/api/temp-email`,
+        {
+          from,
+          to,
+          subject,
+          campaignName,
+          htmlContent: html || '<p>Default email content goes here.</p>',
+          design: JSON.stringify(design),
+          recipients: to.split(',').map((email) => email.trim()),
+          userId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
+        }
+      );
+
+      toast.success('Email sent successfully');
     } catch (error) {
-      console.error('Error exporting HTML', error);
-      toast.error('Error exporting HTML');
+      toast.error('Error sending email');
     }
   };
 
   const scheduleEmail = async () => {
     const { from, to, subject, campaignName } = location.state || {};
+    const userId = user.id;
+    const token = await getToken(); 
 
-    if (!from || !to || !subject || !campaignName) {
-      console.error('Missing required data (from, to, subject, campaignName)');
-      toast.error('Missing required data (from, to, subject, campaignName)');
+    if (!from || !to || !subject || !campaignName || !userId) {
+      toast.error('Missing required data');
       return;
     }
 
     try {
       const { html, design } = await exportHtml();
 
-      axios.post(`${API_URL}/api/temp-email`, {
-        from,
-        to,
-        subject,
-        campaignName,
-        htmlContent: html || '<p>Default email content goes here.</p>',
-        design: JSON.stringify(design),
-        recipients: to.split(',').map((email) => email.trim()),
-        scheduledDate,
-      })
-        .then((response) => {
-          console.log('Email scheduled successfully', response);
-          toast.success('Email scheduled successfully');
-          setScheduleDialogOpen(false);
-        })
-        .catch((error) => {
-          console.error('Error scheduling email', error);
-          toast.error('Error scheduling email');
-        });
+      await axios.post(
+        `${API_URL}/api/temp-email`,
+        {
+          from,
+          to,
+          subject,
+          campaignName,
+          htmlContent: html || '<p>Default email content goes here.</p>',
+          design: JSON.stringify(design),
+          recipients: to.split(',').map((email) => email.trim()),
+          scheduledDate,
+          userId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
+        }
+      );
+
+      toast.success('Email scheduled successfully');
+      setScheduleDialogOpen(false);
     } catch (error) {
-      console.error('Error exporting HTML', error);
-      toast.error('Error exporting HTML');
+      toast.error('Error scheduling email');
     }
   };
 
@@ -183,9 +190,12 @@ const EmailTemplateCreator = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-black via-purple-800 to-black text-white">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-4 text-center">Email Template Editor</h1>
+    <div className="relative min-h-screen bg-white">
+      <div className="absolute inset-0 z-0">
+        <GridPattern />
+      </div>
+      <div className="relative z-10 min-h-screen px-4 py-8">
+        <h1 className="text-3xl font-bold mb-4 text-center text-black">Email Template Editor</h1>
         <div className="mb-4 flex justify-center items-center">
           <div id="email-editor-container">
             <EmailEditor
@@ -216,7 +226,7 @@ const EmailTemplateCreator = () => {
             onClick={saveDesign}
             variant="contained"
             startIcon={<SaveIcon />}
-            className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white"
+            className="bg-gradient-to-r from-yellow-500 to-orange-600 font-bold rounded-md"
           >
             Save Design
           </Button>
@@ -224,7 +234,7 @@ const EmailTemplateCreator = () => {
             onClick={sendEmail}
             variant="contained"
             startIcon={<SendIcon />}
-            className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white"
+            className="bg-gradient-to-r from-yellow-500 to-orange-600 font-bold rounded-md"
           >
             Send Email
           </Button>
@@ -232,7 +242,7 @@ const EmailTemplateCreator = () => {
             onClick={generateEmailContent}
             variant="contained"
             startIcon={<PsychologyIcon />}
-            className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white"
+            className="bg-gradient-to-r from-yellow-500 to-orange-600 rounded-md text-white"
           >
             Generate Email Content
           </Button>
@@ -240,7 +250,7 @@ const EmailTemplateCreator = () => {
             onClick={() => setScheduleDialogOpen(true)}
             variant="contained"
             startIcon={<ScheduleIcon />}
-            className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white"
+            className="bg-gradient-to-r from-yellow-500 to-orange-600 font-bold rounded-md"
           >
             Schedule Email
           </Button>
@@ -254,7 +264,7 @@ const EmailTemplateCreator = () => {
                 onClick={copyToClipboard}
                 variant="contained"
                 startIcon={<ContentCopyIcon />}
-                className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white"
+                className="bg-gradient-to-r from-yellow-500 to-orange-600 font-bold rounded-md"
               >
                 Copy Content
               </Button>
@@ -263,12 +273,12 @@ const EmailTemplateCreator = () => {
               className="bg-opacity-80 bg-black text-white p-4 rounded-lg font-bold"
               style={{ whiteSpace: 'pre-line' }}
             >
-              <p>{generatedContent}</p>
+              {generatedContent}
             </div>
           </div>
         )}
 
-        <Dialog open={scheduleDialogOpen} onClose={() => setScheduleDialogOpen(false)} maxWidth="sm" fullWidth>
+        <Dialog open={scheduleDialogOpen} onClose={() => setScheduleDialogOpen(false)}>
           <DialogTitle>Schedule Email</DialogTitle>
           <DialogContent>
             <DatePicker
@@ -276,24 +286,19 @@ const EmailTemplateCreator = () => {
               onChange={(date) => setScheduledDate(date)}
               showTimeSelect
               dateFormat="Pp"
-              className="w-full"
+              className="w-full p-2 mt-4 text-center border-2 border-yellow-500 rounded-md"
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setScheduleDialogOpen(false)} variant='contained' className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white">
-              Cancel
-            </Button>
-            <Button onClick={scheduleEmail} variant='contained' className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white">
-              Schedule
-            </Button>
+            <Button onClick={() => setScheduleDialogOpen(false)}>Cancel</Button>
+            <Button onClick={scheduleEmail}>Schedule</Button>
           </DialogActions>
         </Dialog>
 
-        <ToastContainer position="bottom-left" autoClose={3000} hideProgressBar={false} />
+        <ToastContainer />
       </div>
     </div>
   );
 };
 
 export default EmailTemplateCreator;
-

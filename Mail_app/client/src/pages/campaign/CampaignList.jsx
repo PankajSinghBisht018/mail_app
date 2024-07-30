@@ -1,31 +1,46 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import {Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow} from '@/components/ui/table';
+import { Skeleton } from '@/components/ui/skeleton';
 import useCampaignStore from '../../store/useCampaignStore';
+import { useUser, useAuth } from '@clerk/clerk-react';
 
 const CampaignsList = () => {
-  const campaigns = useCampaignStore((state) => state.campaigns);
+  const { user } = useUser();
+  const { getToken } = useAuth();
   const fetchCampaigns = useCampaignStore((state) => state.fetchCampaigns);
+  const campaigns = useCampaignStore((state) => state.campaigns);
   const deleteCampaign = useCampaignStore((state) => state.deleteCampaign);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedCampaign, setSelectedCampaign] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchCampaigns();
-  }, [fetchCampaigns]);
+    const loadCampaigns = async () => {
+      const token = await getToken();
+      await fetchCampaigns(token);
+      setLoading(false);
+    };
 
-  const handleDelete = (campaign) => {
+    if (user) {
+      loadCampaigns();
+    }
+  }, [fetchCampaigns, getToken, user]);
+
+  const handleDelete = async (campaign) => {
     setSelectedCampaign(campaign);
     setDialogOpen(true);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (selectedCampaign) {
-      deleteCampaign(selectedCampaign._id);
+      const token = await getToken();
+      await deleteCampaign(selectedCampaign._id, token);
+      setSelectedCampaign(null);
     }
     setDialogOpen(false);
-    setSelectedCampaign(null);
   };
 
   const handleCloseDialog = () => {
@@ -34,68 +49,96 @@ const CampaignsList = () => {
   };
 
   return (
-    <div className="flex-1 min-h-screen bg-gradient-to-b from-black to-purple-900 text-white p-4">
-      <h1 className="text-3xl md:text-4xl font-bold mb-6 text-center">All Campaigns</h1>
-      <ul className="list-none p-0 text-center">
-        {campaigns.map((campaign) => (
-          <li key={campaign._id} className="mb-4 flex flex-col sm:flex-row items-center justify-center">
-            <Link
-              to={`/campaign/campaign-form/${campaign._id}`}
-              className="text-base sm:text-lg text-white text-center mb-2 sm:mb-0"
-              style={{ textDecoration: 'none', width: '100%' }}
-            >
-              {campaign.name}
-            </Link>
+    <div className="relative min-h-screen bg-white">
+      <div className="relative z-10 p-4">
+        <h1 className="text-3xl md:text-4xl font-bold mb-6 text-center">My Campaigns</h1>
+        <div className="relative bg-gray-100 p-4 rounded-lg shadow-lg">
+          {loading ? (
+            <div className="animate-pulse">
+              <Skeleton className="h-6 bg-gray-600 rounded-md mb-2" />
+              <Skeleton className="h-6 bg-gray-600 rounded-md mb-2" />
+              <Skeleton className="h-96 bg-gray-600 rounded-md mb-2" />
+            </div>
+          ) : (
+            <Table className="bg-gray-200">
+              <TableCaption>A list of your campaigns.</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Campaign Name</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {campaigns.map((campaign) => (
+                  <TableRow key={campaign._id}>
+                    <TableCell className="font-medium">
+                      <Link
+                        to={`/campaign/campaign-form/${campaign._id}`}
+                        className="text-base text-yellow-700 hover:underline"
+                      >
+                        {campaign.name}
+                      </Link>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="contained"
+                        color="warning"
+                        onClick={() => handleDelete(campaign)}
+                        startIcon={<DeleteIcon />}
+                        size="small"
+                        className="bg-yellow-600 text-black"
+                      >
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TableCell colSpan={2} className="text-right font-bold">
+                    Total Campaigns: {campaigns.length}
+                  </TableCell>
+                </TableRow>
+              </TableFooter>
+            </Table>
+          )}
+        </div>
+        <Dialog
+          open={dialogOpen}
+          onClose={handleCloseDialog}
+          fullWidth
+          maxWidth="sm"
+          PaperProps={{
+            style: {
+              borderRadius: '12px',
+              padding: '16px',
+              backgroundColor: '#282c34',
+            },
+          }}
+        >
+          <DialogTitle sx={{ color: 'white' }}>Confirm Deletion</DialogTitle>
+          <DialogContent>
+            <DialogContentText sx={{ color: 'white' }}>
+              Are you sure you want to delete the campaign "{selectedCampaign?.name}"? This action cannot be undone.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
             <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => handleDelete(campaign)}
-              startIcon={<DeleteIcon />}
-              size="small"
-              style={{ marginLeft: '8px' }}
-              className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white"
+              onClick={handleCloseDialog}
+              className="bg-yellow-500 text-black"
             >
-              Delete
+              Cancel
             </Button>
-          </li>
-        ))}
-      </ul>
-      <Dialog
-        open={dialogOpen}
-        onClose={handleCloseDialog}
-        fullWidth
-        maxWidth="sm"
-        PaperProps={{
-          style: {
-            borderRadius: '12px',
-            padding: '16px',
-            backgroundColor: '#282c34', 
-          },
-        }}
-      >
-        <DialogTitle sx={{ color: 'white' }}>Confirm Deletion</DialogTitle>
-        <DialogContent>
-          <DialogContentText sx={{ color: 'white' }}>
-            Are you sure you want to delete the campaign "{selectedCampaign?.name}"? This action cannot be undone.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={handleCloseDialog}
-            variant="contained"
-            className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white"
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleConfirmDelete}
-            variant="contained"
-            className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-md text-white"
-          >
-            Confirm
-          </Button>
-        </DialogActions>
-      </Dialog>
+            <Button
+              onClick={handleConfirmDelete}
+              className="bg-yellow-500 text-black"
+            >
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
     </div>
   );
 };

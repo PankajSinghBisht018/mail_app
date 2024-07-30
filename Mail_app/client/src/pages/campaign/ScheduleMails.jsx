@@ -1,92 +1,93 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useAuth } from '@clerk/clerk-react'; 
 import { Typography, Container, Box, IconButton } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
-import SendIcon from '@mui/icons-material/Send';
-import CancelIcon from '@mui/icons-material/Cancel';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { Send as SendIcon, Cancel as CancelIcon, CheckCircle as CheckCircleIcon} from '@mui/icons-material';
 import "react-toastify/dist/ReactToastify.css";
 import { motion } from 'framer-motion';
-import GridPattern from '@/components/magicui/grid-pattern'; // Ensure this path is correct
-import { Skeleton } from '@/components/ui/skeleton'; // Ensure this path is correct
+import { Skeleton } from '@/components/ui/skeleton';
 import { API_URL } from '../../services/helper';
 
 const ScheduleMails = () => {
   const [scheduledEmails, setScheduledEmails] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { getToken } = useAuth(); 
 
   useEffect(() => {
-    const fetchScheduledEmails = async () => {
-      try {
-        const response = await axios.get(`${API_URL}/api/email-events`);
-        setScheduledEmails(response.data);
-      } catch (error) {
-        toast.error('Failed to fetch scheduled emails');
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchScheduledEmails();
   }, []);
 
-  const handleCancelSchedule = async (id) => {
+  const fetchScheduledEmails = async () => {
+    setLoading(true);
     try {
-      await axios.post(`${API_URL}/api/cancel-email/${id}`);
-      toast.success('Email schedule canceled');
-      setLoading(true);
-      await fetchScheduledEmails();
+      const token = await getToken();
+      const response = await axios.get(`${API_URL}/api/email-events`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setScheduledEmails(response.data);
     } catch (error) {
-      toast.error('Failed to cancel email schedule');
+      console.error("Error fetching emails:", error);
+      toast.error('Failed to fetch scheduled emails');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCancelSchedule = async (id) => {
+    try {
+      const token = await getToken();
+      await axios.post(`${API_URL}/api/cancel-email/${id}`, null, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success('Email schedule canceled');
+      fetchScheduledEmails();
+    } catch (error) {
+      toast.error('Failed to cancel email schedule');
     }
   };
 
   const handleSendNow = async (id) => {
     try {
-      await axios.post(`${API_URL}/api/send-now/${id}`);
+      const token = await getToken();
+      await axios.post(`${API_URL}/api/send-now/${id}`, null, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       toast.success('Email sent immediately');
-      setLoading(true);
-      await fetchScheduledEmails();
+      fetchScheduledEmails();
     } catch (error) {
       toast.error('Failed to send email immediately');
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
-    <div className="relative min-h-screen bg-white">
-      <GridPattern />
-      <motion.div 
-        className="relative z-10 min-h-screen bg-white"
+    <div className="relative min-h-screen">
+      <motion.div
+        className="relative z-10 min-h-screen"
         initial={{ opacity: 0, x: 100 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
         <Container sx={{ marginTop: '20px' }}>
-        <GridPattern />
           <Typography variant="h4" className="text-center">Scheduled Emails</Typography>
           <Box>
             {loading ? (
               <div className="animate-pulse">
-                  <div className="p-4 mb-4 bg-gray-600 rounded-md shadow-lg">
-                    <Skeleton className="h-20 bg-gray-700 rounded-md mb-2" />
-                    <Skeleton className="h-20 bg-gray-700 rounded-md mb-2" />
-                    <Skeleton className="h-20 bg-gray-700 rounded-md mb-2" />
-                    <Skeleton className="h-20 bg-gray-700 rounded-md mb-2" />
-                    <Skeleton className="h-20 bg-gray-700 rounded-md" />
-                  </div>
+                <div className="p-4 mb-4 bg-gray-600 rounded-md shadow-lg">
+                  {[...Array(5)].map((_, i) => (
+                    <Skeleton key={i} className="h-20 bg-gray-700 rounded-md mb-2" />
+                  ))}
+                </div>
               </div>
             ) : (
               scheduledEmails.map((email) => (
-                <motion.div 
-                  key={email._id} 
+                <motion.div
+                  key={email._id}
                   className="p-4 mb-4 bg-gray-400 rounded-md shadow-lg flex justify-between items-center"
                   initial={{ opacity: 0, y: 50 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.2 }}
-                  transition={{ duration: 0.5, delay:  0.1 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
                 >
                   <div>
                     <Typography variant="h6">{email.subject}</Typography>
@@ -107,12 +108,8 @@ const ScheduleMails = () => {
                         </IconButton>
                       </>
                     )}
-                    {email.sent && (
-                      <CheckCircleIcon className="text-green-500" />
-                    )}
-                    {email.canceled && (
-                      <CancelIcon className="text-red-500" />
-                    )}
+                    {email.sent && <CheckCircleIcon className="text-green-500" />}
+                    {email.canceled && <CancelIcon className="text-red-500" />}
                   </div>
                 </motion.div>
               ))
@@ -120,7 +117,7 @@ const ScheduleMails = () => {
           </Box>
         </Container>
       </motion.div>
-      <ToastContainer position="bottom-right" />
+      <ToastContainer position="bottom-left" autoClose={3000} hideProgressBar={false} />
     </div>
   );
 };

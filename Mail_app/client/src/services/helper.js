@@ -1,1 +1,1 @@
-export const API_URL = 'https://mail-app-backend-eosb.onrender.com';
+export const API_URL ='https://mail-app-backend-eosb.onrender.com';
