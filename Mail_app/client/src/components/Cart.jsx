@@ -1,16 +1,20 @@
 import React, { useEffect } from 'react';
 import useCartStore from '../store/useCartStore';
 import { motion } from 'framer-motion';
-import ShimmerButton from '@/components/magicui/shimmer-button';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Button from '@mui/material/Button';
-import axios from 'axios'; 
+import { Button } from '@/components/ui/button';
+import axios from 'axios';
 import { API_URL } from '../services/helper';
+import GridPattern from '@/components/magicui/grid-pattern';
+import {Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow} from "@/components/ui/table";
+import { Remove as RemoveIcon, Add as AddIcon } from '@mui/icons-material'; 
 
 const Cart = () => {
   const cartItems = useCartStore((state) => state.cartItems);
   const removeFromCart = useCartStore((state) => state.removeFromCart);
+  const increaseQuantity = useCartStore((state) => state.increaseQuantity);
+  const decreaseQuantity = useCartStore((state) => state.decreaseQuantity);
   const resetCart = useCartStore((state) => state.resetCart);
 
   useEffect(() => {
@@ -33,7 +37,7 @@ const Cart = () => {
 
   const handlePlaceOrder = async () => {
     try {
-      const amountInPaise = cartItems.reduce((acc, item) => acc + item.price, 0);
+      const amountInPaise = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
       const { data } = await axios.post(`${API_URL}/api/create-order`, {
         amount: amountInPaise,
@@ -70,49 +74,81 @@ const Cart = () => {
 
   return (
     <>
-      <motion.div className='bg-gradient-to-r from-purple-900 to-black min-h-screen'>
-        <div className="container mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-6 text-white">Shopping Cart</h2>
+      <motion.div className='relative min-h-screen'>
+        <GridPattern className="absolute inset-0 z-0" /> 
+        <div className="container mx-auto py-6 px-4 sm:px-6 lg:px-8 relative z-10">
+          <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">Shopping Cart</h2>
           {cartItems.length === 0 ? (
-            <p className="text-xl text-center text-white">Your cart is empty.</p>
+            <p className="text-xl text-center text-black">Your cart is empty.</p>
           ) : (
-            <div className="overflow-x-auto">
-              <div className="relative border bg-background rounded-lg shadow-md">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-100">
-                    <tr>
-                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-900">Item</th>
-                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-900">Price</th>
-                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-900">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {cartItems.map((item) => (
-                      <tr key={item.id}>
-                        <td className="px-4 py-2 text-sm font-medium text-gray-900">{item.title}</td>
-                        <td className="px-4 py-2 text-sm text-gray-700">₹{item.price}</td>
-                        <td className="px-4 py-2 text-sm">
-                          <Button
-                            variant="contained"
-                            color="error"
-                            onClick={() => removeFromCart(item.id)}
-                          >
-                            Remove
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            <Table className="bg-gray-800 text-white"> 
+              <TableCaption>Your cart items.</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[200px]">Item</TableHead>
+                  <TableHead>Price</TableHead>
+                  <TableHead>Quantity</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {cartItems.map((item) => (
+                  <TableRow key={item.id}>
+                    <TableCell className="font-medium">{item.title}</TableCell>
+                    <TableCell>₹{item.price}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center">
+                        <Button
+                          className="mr-2"
+                          onClick={() => decreaseQuantity(item.id)}
+                          size="small"
+                          variant="outlined"
+                          color="inherit"
+                        >
+                          <RemoveIcon />
+                        </Button>
+                        {item.quantity}
+                        <Button
+                          className="ml-2"
+                          onClick={() => increaseQuantity(item.id)}
+                          size="small"
+                          variant="outlined"
+                          color="inherit"
+                        >
+                          <AddIcon />
+                        </Button>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="contained"
+                        color="error"
+                        onClick={() => removeFromCart(item.id)}
+                      >
+                        <RemoveIcon />
+                        Remove
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TableCell colSpan={2}>Total</TableCell>
+                  <TableCell className="text-right">₹{cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)}</TableCell>
+                </TableRow>
+              </TableFooter>
+            </Table>
           )}
           <div className="flex justify-end mt-6">
-            <ShimmerButton className="shadow-2xl p-button p-button-success" onClick={handlePlaceOrder}>
-              <span className="whitespace-nowrap text-sm font-medium text-white">
+            <Button
+              className="bg-yellow-500 text-white hover:bg-yellow-600 shadow-lg"
+              onClick={handlePlaceOrder}
+            >
+              <span className="whitespace-nowrap text-sm font-medium">
                 Place Order
               </span>
-            </ShimmerButton>
+            </Button>
           </div>
         </div>
         <ToastContainer />

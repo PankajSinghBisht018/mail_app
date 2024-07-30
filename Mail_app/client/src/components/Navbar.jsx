@@ -1,75 +1,147 @@
-import React, { useState } from 'react';
-import { Sidebar } from 'primereact/sidebar';
-import { Button } from 'primereact/button';
+import React, { useState, useEffect } from 'react';
+import { AppBar, Toolbar, IconButton, Typography, Button, Drawer, List, ListItem, ListItemText, useTheme, useMediaQuery, styled } from '@mui/material';
+import { Menu as MenuIcon } from '@mui/icons-material';
 import { SignedIn, SignedOut, UserButton, SignInButton, useAuth, useUser } from '@clerk/clerk-react';
 import { Link } from 'react-router-dom';
 import { checkRole } from '../utils/roles';
 
+const NavLink = styled(Link)(({ theme }) => ({
+  textDecoration: 'none',
+  color: 'inherit',
+  margin: '0 16px',
+  fontSize: '1rem', 
+  '&:hover': {
+    color: theme.palette.warning.main,
+  },
+}));
+
 const Navbar = () => {
-  const [visible, setVisible] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isSticky, setIsSticky] = useState(false);
   const { isLoaded, isSignedIn } = useAuth();
   const { user } = useUser();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsSticky(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const isAdmin = isLoaded && isSignedIn && checkRole(user, 'admin');
   const isDeveloper = isLoaded && isSignedIn && checkRole(user, 'developer');
 
+  const handleDrawerToggle = () => setDrawerOpen(!drawerOpen);
+
   return (
     <>
-      <nav className="bg-gradient-to-l from-pink-100 to-purple-600 p-4 flex justify-between items-center shadow-lg">
-        <div className="text-white text-2xl font-bold">
-          <Link to="/">Mail App</Link>
-        </div>
-        <div className="hidden md:flex space-x-8">
-          <SignedIn>
-            <Link to="/" className="text-purple-900 text-xl font-bold hover:underline">Home</Link>
-            <Link to="/campaign" className="text-purple-900 text-xl font-bold hover:underline">Campaign</Link>
-            <Link to="/pricing" className="text-purple-900 text-xl font-bold hover:underline">Pricing</Link>
-            <Link to="/features" className="text-purple-900 text-xl font-bold hover:underline">Features</Link>
-            <Link to="/cart" className="text-purple-900 text-xl font-bold hover:underline">Cart</Link>
-            <Link to="/contact" className="text-purple-900 text-xl font-bold hover:underline">Contact</Link>
-            {isAdmin && (
-              <Link to="/admin" className="text-purple-900 text-xl font-bold hover:underline">Admin</Link>
-            )}
-            {isDeveloper && (
-              <Link to="/developer" className="text-purple-900 text-xl font-bold hover:underline">Developer</Link>
-            )}
-            <UserButton />
-          </SignedIn>
-          <SignedOut>
-            <SignInButton mode="modal">
-              <button className="bg-white text-blue-500 hover:bg-gray-100 px-4 py-2 rounded shadow">Login</button>
-            </SignInButton>
-          </SignedOut>
-        </div>
-        <div className="md:hidden">
-          <Button icon="pi pi-bars" className="p-button-rounded p-button-text text-white" onClick={() => setVisible(true)} />
-        </div>
-      </nav>
+      <AppBar
+        position={isSticky ? 'fixed' : 'relative'}
+        sx={{
+          backdropFilter: isSticky ? 'blur(10px)' : 'none',
+          backgroundColor: isSticky ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+          boxShadow: isSticky ? 3 : 'none',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: theme.zIndex.appBar,
+          transition: 'all 0.3s ease-in-out',
+          borderRadius: isSticky ? '50px' : '0', 
+          marginTop: isSticky ? 1 : 0, 
+          padding: isSticky ? '8px 16px' : '16px 32px', 
+        }}
+      >
+        <Toolbar sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <img src='https://cdn-icons-png.flaticon.com/512/666/666162.png' alt="Logo" style={{ height: 40, marginLeft: isSticky ? 0 : '16px' }} />
+            </Link>
+          </Typography>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: isMobile ? 'none' : 'flex', color: 'black', alignItems: 'center' }}>
+              <SignedIn>
+                <NavLink to="/" sx={{ fontSize: isSticky ? '0.875rem' : '1rem' }}>Home</NavLink>
+                <NavLink to="/campaign" sx={{ fontSize: isSticky ? '0.875rem' : '1rem' }}>Campaign</NavLink>
+                <NavLink to="/pricing" sx={{ fontSize: isSticky ? '0.875rem' : '1rem' }}>Pricing</NavLink>
+                <NavLink to="/cart" sx={{ fontSize: isSticky ? '0.875rem' : '1rem' }}>Cart</NavLink>
+                <NavLink to="/contact" sx={{ fontSize: isSticky ? '0.875rem' : '1rem' }}>Contact</NavLink>
+                <NavLink to="/donate" sx={{ fontSize: isSticky ? '0.875rem' : '1rem' }}>Donate</NavLink>
+                {isAdmin && <NavLink to="/admin" sx={{ fontSize: isSticky ? '0.875rem' : '1rem' }}>Admin</NavLink>}
+                {isDeveloper && <NavLink to="/developer" sx={{ fontSize: isSticky ? '0.875rem' : '1rem' }}>Developer</NavLink>}
+                <UserButton sx={{ ml: 2 }} />
+              </SignedIn>
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <Button variant="contained" color="secondary" sx={{ ml: 2, fontSize: isSticky ? '0.75rem' : '1rem' }}>Login</Button>
+                </SignInButton>
+              </SignedOut>
+            </div>
+            <IconButton
+              edge="end"
+              color="inherit"
+              aria-label="menu"
+              onClick={handleDrawerToggle}
+              sx={{ 
+                display: isMobile ? 'block' : 'none',
+                color: 'black',
+              }}
+            >
+              <MenuIcon />
+            </IconButton>
+          </div>
+        </Toolbar>
+      </AppBar>
 
-      <Sidebar visible={visible} onHide={() => setVisible(false)} position="right" className="bg-gradient-to-l from-pink-100 to-purple-600 text-white">
-        <div className="flex flex-col p-4 space-y-4">
+      <Drawer
+        anchor="right"
+        open={drawerOpen}
+        onClose={handleDrawerToggle}
+        sx={{ '& .MuiDrawer-paper': { width: 250, backgroundColor: 'white', boxShadow: 3 } }}
+      >
+        <List>
           <SignedIn>
-            <Link to="/" className="font-bold hover:underline" onClick={() => setVisible(false)}>Home</Link>
-            <Link to="/campaign" className="font-bold hover:underline" onClick={() => setVisible(false)}>Campaign</Link>
-            <Link to="/pricing" className="font-bold hover:underline" onClick={() => setVisible(false)}>Pricing</Link>
-            <Link to="/features" className="font-bold hover:underline" onClick={() => setVisible(false)}>Features</Link>
-            <Link to="/cart" className="font-bold hover:underline" onClick={() => setVisible(false)}>Cart</Link>
-            <Link to="/contact" className="font-bold hover:underline" onClick={() => setVisible(false)}>Contact</Link>
+            <ListItem component={NavLink} to="/" onClick={handleDrawerToggle}>
+              <ListItemText primary="Home" />
+            </ListItem>
+            <ListItem component={NavLink} to="/campaign" onClick={handleDrawerToggle}>
+              <ListItemText primary="Campaign" />
+            </ListItem>
+            <ListItem component={NavLink} to="/pricing" onClick={handleDrawerToggle}>
+              <ListItemText primary="Pricing" />
+            </ListItem>
+            <ListItem component={NavLink} to="/cart" onClick={handleDrawerToggle}>
+              <ListItemText primary="Cart" />
+            </ListItem>
+            <ListItem component={NavLink} to="/contact" onClick={handleDrawerToggle}>
+              <ListItemText primary="Contact" />
+            </ListItem>
             {isAdmin && (
-              <Link to="/admin" className="font-bold hover:underline" onClick={() => setVisible(false)}>Admin</Link>
+              <ListItem component={NavLink} to="/admin" onClick={handleDrawerToggle}>
+                <ListItemText primary="Admin" />
+              </ListItem>
             )}
             {isDeveloper && (
-              <Link to="/developer" className="font-bold hover:underline" onClick={() => setVisible(false)}>Developer</Link>
+              <ListItem component={NavLink} to="/developer" onClick={handleDrawerToggle}>
+                <ListItemText primary="Developer" />
+              </ListItem>
             )}
-            <UserButton />
+            <ListItem>
+              <UserButton />
+            </ListItem>
           </SignedIn>
           <SignedOut>
-            <SignInButton mode="modal">
-              <button className="bg-blue-500 text-white hover:bg-blue-600 px-4 py-2 rounded shadow w-full" onClick={() => setVisible(false)}>Login</button>
-            </SignInButton>
+            <ListItem>
+              <SignInButton mode="modal">
+                <Button variant="contained" color="secondary" fullWidth>Login</Button>
+              </SignInButton>
+            </ListItem>
           </SignedOut>
-        </div>
-      </Sidebar>
+        </List>
+      </Drawer>
     </>
   );
 };
