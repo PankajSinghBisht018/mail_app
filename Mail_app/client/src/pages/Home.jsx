@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from 'primereact/button';
-import hero from './heroimg.png';
+import { Button, Typography, Box, Paper } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useAuth } from '@clerk/clerk-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import GridPattern from '@/components/magicui/grid-pattern'; 
+import hero from './heroimg.png';
+import Meteors from '@/components/magicui/meteors'; 
+import TestimonialPage from '@/components/TestimonialPage';
 
 function Home() {
   const { isSignedIn } = useAuth();
@@ -24,62 +26,81 @@ function Home() {
   };
 
   return (
-    <div className="relative flex flex-col min-h-fit bg-gradient-to-r from-black to-purple-900 ">
+  <>
+    <div style={{ backgroundColor: 'white', color: '#000', minHeight: '100vh', position: 'relative' , }}>
       <ToastContainer />
-      
-      <GridPattern
-        width={20}
-        height={20}
-        x={-1}
-        y={-1}
-        className="absolute inset-0"
-      />
-      
-      <div className="relative flex items-center justify-center min-h-fit bg-gradient-to-r from-black to-purple-900 bg-opacity-60">
-        <GridPattern
-          width={20}
-          height={20}
-          x={0}
-          y={0}
-          className="absolute inset-0 z-0 opacity-30" 
-        />
+      <GridPattern />
+      <Box
+        sx={{
+          color: '#000',
+          minHeight: '50vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative',
+          overflow: 'hidden'
+        }}
+      >
+        <GridPattern/>
+        <Meteors number={30} />
         <motion.div
-          className="relative z-10 max-w-5xl mx-auto text-center text-white py-20 px-6 md:px-12"
+          className="relative z-10 text-center"
           initial={{ opacity: 0, x: -800 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1, delay: 0.5, ease: 'linear' }}
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">Welcome to Our Service</h1>
-          <p className="text-lg lg:text-xl mb-8">
-            Hey, Welcome to Our Email App 
-          </p>
-          <div className="flex justify-center space-x-4">
-            <Button label="Get Started" icon="pi pi-arrow-right" className="p-button-primary p-button-lg" onClick={handleLogin} />
-          </div>
+          <Typography variant="h2" gutterBottom>
+            Welcome to Our Service
+          </Typography>
+          <Typography variant="body1" paragraph>
+            Hey, Welcome to Our Email App
+          </Typography>
+          <Button
+            variant="contained"
+            color="warning"
+            onClick={handleLogin}
+            sx={{ mt: 2, borderRadius: '20px' }}
+          >
+            Get Started
+          </Button>
         </motion.div>
-      </div>
-      
+      </Box>
       <motion.div
-        className="flex flex-col md:flex-row py-2 px-6 md:px-12 text-white"
+        className="flex flex-col md:flex-row py-4 px-6 md:px-12"
         initial={{ opacity: 0, x: 800 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 1, delay: 0.5, ease: 'linear' }}
+        style={{ backgroundColor: '#fff' }} 
       >
-        <div className="md:w-1/2">
-          <img src={hero} alt="Sunset" className="w-fit h-auto pb-2 rounded-lg border-4" />
-        </div>
-        <div className="md:w-1/2 md:ml-6 flex flex-col justify-center text-center md:text-left">
-          <h2 className="text-3xl font-bold mb-4">Our Mission</h2>
-          <p className="text-lg mb-6">
+        <Paper elevation={3} sx={{ flex: 1, margin: 2, padding: 2, backgroundColor: '#C0C0C0' }}>
+          <img
+            src={hero} 
+            alt="Hero"
+            style={{ width: '100%', height: 'auto', borderRadius: '8px' }}
+          />
+        </Paper>
+        <Box sx={{ flex: 1, margin: 2 }}>
+          <Typography variant="h4" gutterBottom>
+            Our Mission
+          </Typography>
+          <Typography variant="body1" paragraph>
             At our core, we strive to empower individuals and businesses alike by providing innovative solutions that enhance productivity, creativity, and efficiency. We believe in leveraging technology to create impactful experiences and foster meaningful connections. Our mission is to continuously evolve and adapt, anticipating the needs of our community and exceeding expectations with every interaction.
-          </p>
-          <hr />
-          <div className="text-center md:text-left mt-4 mb-5">
-            <Button label="About Us" icon="pi pi-info-circle" className="p-button-primary p-button-lg mx-auto" />
-          </div>
-        </div>
+          </Typography>
+          <Button
+            variant="contained"
+            color="warning"
+            onClick={() => {}}
+            sx={{ mt: 2, borderRadius: '20px' }}
+          >
+            About Us
+          </Button>
+        </Box>
       </motion.div>
+      
     </div>
+
+    <TestimonialPage/>
+    </>
   );
 }
 

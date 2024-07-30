@@ -3,17 +3,8 @@ import { Chart as ChartJS, BarElement, LineElement, CategoryScale, LinearScale, 
 import { Bar } from 'react-chartjs-2';
 import { Container, Typography, Box } from '@mui/material';
 
-ChartJS.register(
-  BarElement, 
-  LineElement, 
-  CategoryScale, 
-  LinearScale, 
-  Title, 
-  Tooltip, 
-  Legend, 
-  BarController, 
-  LineController
-);
+
+ChartJS.register(BarElement, LineElement, CategoryScale, LinearScale, Title, Tooltip, Legend, BarController, LineController);
 
 const DeviceAnalytics = () => {
   const [chartData, setChartData] = useState({
@@ -73,7 +64,19 @@ const DeviceAnalytics = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4 }}>
+    <Container maxWidth="lg" sx={{ mt: 4, position: 'relative' }}>
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'white', 
+          backgroundSize: 'cover',
+          zIndex: -1,
+        }}
+      />
       <Box 
         sx={{ 
           display: 'flex', 
@@ -105,7 +108,8 @@ const DeviceAnalytics = () => {
             borderRadius: '8px', 
             boxShadow: 1,
             display: 'flex', 
-            justifyContent: 'center' 
+            justifyContent: 'center',
+            position: 'relative',
           }}
         >
           {loading ? (

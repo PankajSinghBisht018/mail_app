@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
-import { Button, Box, Typography, TextField, Modal, Container } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Button, Box, Typography, TextField, Modal, Container, IconButton } from '@mui/material';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import Rating from '@mui/material/Rating';
 import { API_URL } from '../services/helper';
+import { useLocation, useNavigate } from 'react-router-dom';
+import GridPattern from '@/components/magicui/grid-pattern';
+import CloseIcon from '@mui/icons-material/Close';
 
 const modalStyle = {
   position: 'absolute',
@@ -14,10 +17,13 @@ const modalStyle = {
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
-  borderRadius: '10px'
+  borderRadius: '10px',
+  backdropFilter: 'blur(5px)'
 };
 
 const Feedback = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -27,8 +33,16 @@ const Feedback = () => {
     rating: 0
   });
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  useEffect(() => {
+    if (location.pathname === '/feedback') {
+      setOpen(true);
+    }
+  }, [location]);
+
+  const handleClose = () => {
+    setOpen(false);
+    navigate('/');
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -50,24 +64,18 @@ const Feedback = () => {
   };
 
   return (
-    <div className="bg-gradient-to-b from-purple-950 to-black min-h-screen flex justify-center">
-      <Container className="flex flex-col mt-7">
+    <div className="bg-white min-h-screen flex justify-center items-center">
+      <GridPattern/>
+      <Container>
         <ToastContainer position='top-right' />
-        <Typography variant="h3" className="text-center text-white">
-          Submit Your Feedback To Us
-        </Typography>
-        <div className="flex justify-center mt-8">
-          <Button
-            variant="contained"
-            onClick={handleOpen}
-            size="lg"
-            className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-md mt-4"
-          >
-            Create a Survey
-          </Button>
-        </div>
         <Modal open={open} onClose={handleClose}>
-          <Box sx={modalStyle} className="bg-white rounded-lg p-6">
+          <Box sx={modalStyle} className="bg-white rounded-lg p-6 relative">
+            <IconButton 
+              onClick={handleClose} 
+              sx={{ position: 'absolute', top: 8, right: 8, color: 'red' }}
+            >
+              <CloseIcon />
+            </IconButton>
             <Typography variant="h6" component="h2" className="text-center mb-4">
               Feedback Form
             </Typography>
@@ -107,16 +115,19 @@ const Feedback = () => {
                 onChange={handleChange}
                 variant="outlined"
               />
-              <Rating
-                name="rating"
-                value={formData.rating}
-                onChange={handleRatingChange}
-              />
+              <Box className="flex items-center mb-4">
+                <Typography variant="body1" className="mr-2">Rating:</Typography>
+                <Rating
+                  name="rating"
+                  value={formData.rating}
+                  onChange={handleRatingChange}
+                />
+              </Box>
               <Button
                 type="submit"
                 variant="contained"
                 fullWidth
-                className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-md mt-4"
+                className="bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-md mt-4"
               >
                 Submit
               </Button>
