@@ -9,7 +9,7 @@ const surveyRoutes = require('./routes/surveyRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const emailTrackingRoutes = require('./routes/emailTrackingRoutes');
 const authRoutes = require('./routes/userRoutes');
-
+const templateRoutes = require('./routes/templateRoutes');
 
 require('dotenv').config();
 
@@ -19,8 +19,6 @@ const PORT = process.env.PORT || 8000;
 app.use(cors());
 app.use(express.json());
 connectDB();
-
-
 
 app.get('/', (req, res) => {
   res.send('Mail app!');
@@ -33,6 +31,7 @@ app.use('/api', campaignRoutes);
 app.use('/api', surveyRoutes);
 app.use('/api', orderRoutes);
 app.use('/api', emailTrackingRoutes);
+app.use('/api', templateRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

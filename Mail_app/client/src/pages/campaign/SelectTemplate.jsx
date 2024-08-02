@@ -1,45 +1,45 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import templatesData from './savefile.json';
-import Template1Image from '../../images/template1.png';
-import Template2Image from '../../images/template2.png';
-import Template3Image from '../../images/template3.png';
-import Template4Image from '../../images/template4.png';
-import Template5Image from '../../images/template5.png';
-
+import axios from 'axios';
+import { API_URL } from '@/services/helper';
 
 const SelectTemplate = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { from, to, subject, campaignName } = location.state || {};
+  const [templates, setTemplates] = useState([]);
+
+  useEffect(() => {
+    const fetchTemplates = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/api/templates`);
+        setTemplates(response.data);
+      } catch (error) {
+        console.error('Error fetching templates:', error);
+      }
+    };
+
+    fetchTemplates();
+  }, []);
 
   const handleSelectTemplate = (template) => {
+    let parsedDesign;
+    try {
+      parsedDesign = JSON.parse(template.design);
+    } catch (error) {
+      console.error('Invalid JSON format in template design:', error);
+      return; 
+    }
+
     navigate('/create-template', {
       state: {
-        design: template.design,
+        design: parsedDesign, 
         from,
         to,
         subject,
         campaignName,
       },
     });
-  };
-
-  const getImagePath = (imageName) => {
-    switch (imageName) {
-      case 'template1.png':
-        return Template1Image;
-      case 'template2.png':
-        return Template2Image;
-      case 'template3.png':
-        return Template3Image;
-      case 'template4.png':
-        return Template4Image;
-      case 'template5.png':
-        return Template5Image;
-      default:
-        return null;
-    }
   };
 
   return (
@@ -49,16 +49,16 @@ const SelectTemplate = () => {
       <div className="relative z-10 flex flex-col items-center min-h-screen p-4">
         <h1 className="text-4xl font-bold mb-8 text-center text-black">Select a Template</h1>
         <div className="flex flex-wrap justify-center gap-8">
-          {templatesData.map((template, index) => (
+          {templates.map((template) => (
             <div
-              key={index}
+              key={template._id}
               className="bg-white text-black rounded-lg shadow-lg cursor-pointer w-full max-w-xs md:max-w-sm lg:max-w-md flex flex-col"
               onClick={() => handleSelectTemplate(template)}
             >
               <div className="flex-1 flex flex-col p-4">
-                {template.imageName && (
+                {template.imageUrl && (
                   <img
-                    src={getImagePath(template.imageName)}
+                    src={template.imageUrl} 
                     alt={template.name}
                     className="mb-4 w-full h-56 object-cover rounded-lg"
                   />

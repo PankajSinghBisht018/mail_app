@@ -3,6 +3,7 @@ import EmailForm from '../components/EmailForm';
 import { motion } from 'framer-motion';
 import GridPattern from '@/components/magicui/grid-pattern';
 import TypingAnimation from '@/components/magicui/typing-animation';
+import ChatBot from '@/components/ChatBot';
 
 function Contact() {
   const [selectedTopic, setSelectedTopic] = useState('');
@@ -90,6 +91,7 @@ function Contact() {
           </div>
         </div>
       </div>
+      <ChatBot/>
     </motion.div>
   );
 }

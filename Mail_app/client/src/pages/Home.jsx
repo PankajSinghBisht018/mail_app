@@ -5,7 +5,7 @@ import { useAuth } from '@clerk/clerk-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import GridPattern from '@/components/magicui/grid-pattern'; 
-import hero from './heroimg.png';
+import hero from '../images/heroimg.png';
 import Meteors from '@/components/magicui/meteors'; 
 import TestimonialPage from '@/components/TestimonialPage';
 

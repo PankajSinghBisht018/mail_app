@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '@clerk/clerk-react'; 
-import { Typography, Container, Box, IconButton } from '@mui/material';
+import { Typography, Container, Box, IconButton, TextField, InputAdornment } from '@mui/material';
+import { Search as SearchIcon, Send as SendIcon, Cancel as CancelIcon, CheckCircle as CheckCircleIcon } from '@mui/icons-material';
 import { ToastContainer, toast } from 'react-toastify';
-import { Send as SendIcon, Cancel as CancelIcon, CheckCircle as CheckCircleIcon} from '@mui/icons-material';
 import "react-toastify/dist/ReactToastify.css";
 import { motion } from 'framer-motion';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -12,6 +12,7 @@ import { API_URL } from '../../services/helper';
 const ScheduleMails = () => {
   const [scheduledEmails, setScheduledEmails] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
   const { getToken } = useAuth(); 
 
   useEffect(() => {
@@ -60,6 +61,18 @@ const ScheduleMails = () => {
     }
   };
 
+  const handleSearch = () => {
+    setLoading(true);
+    fetchScheduledEmails().finally(() => {
+      setLoading(false);
+    });
+  };
+
+  const filteredEmails = scheduledEmails.filter((email) => 
+    email.subject.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    email.recipient.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="relative min-h-screen">
       <motion.div
@@ -70,6 +83,25 @@ const ScheduleMails = () => {
       >
         <Container sx={{ marginTop: '20px' }}>
           <Typography variant="h4" className="text-center">Scheduled Emails</Typography>
+          <div className="flex justify-start my-2">
+            <TextField 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              variant="outlined"
+              placeholder="Search by subject or recipient"
+              className="mr-2 rounded-full"
+              size="small"
+              sx={{ marginBottom: '20px', width: '300px' }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+                className: 'rounded-full',
+              }}
+            />
+          </div>
           <Box>
             {loading ? (
               <div className="animate-pulse">
@@ -80,7 +112,7 @@ const ScheduleMails = () => {
                 </div>
               </div>
             ) : (
-              scheduledEmails.map((email) => (
+              filteredEmails.map((email) => (
                 <motion.div
                   key={email._id}
                   className="p-4 mb-4 bg-gray-400 rounded-md shadow-lg flex justify-between items-center"

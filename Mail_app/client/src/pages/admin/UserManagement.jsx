@@ -4,7 +4,6 @@ import { Delete } from '@mui/icons-material';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import CloseIcon from '@mui/icons-material/Close';
-import GridPattern from '@/components/magicui/grid-pattern';
 import { useUser } from '@clerk/clerk-react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { API_URL } from '../../services/helper';
@@ -67,7 +66,6 @@ const UserManagement = () => {
     <div className="bg-white min-h-screen flex justify-center">
      
       <Container>
-      <GridPattern />
         <ToastContainer position="top-right" />
         <Typography variant="h4" component="h2" className="text-center my-4">
           User Management

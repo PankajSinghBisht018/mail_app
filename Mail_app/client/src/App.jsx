@@ -12,21 +12,23 @@ import CampaignForm from './pages/campaign/CampaignForm';
 import CampaignsList from './pages/campaign/CampaignList';
 import EmailTemplateCreator from './pages/campaign/EmailTemplateCreator';
 import SelectTemplate from './pages/campaign/SelectTemplate';
-import Analytics from './pages/Analytics';
-import Admin from './pages/Admin';
+import Analytics from './pages/analytics/Analytics';
+import Admin from './pages/admin/Admin';
 import Developer from './pages/Developer';
 import ProtectedRoute from './components/ProtectedRoute';
 import { SignedIn } from '@clerk/clerk-react';
-import Feedback from './pages/Feedback';
-import FeedbackList from './pages/FeedbackList';
+import Feedback from './pages/feedback/Feedback';
+import FeedbackList from './pages/admin/FeedbackList';
 import ScheduleMails from './pages/campaign/ScheduleMails';
-import DeviceAnalytics from './pages/DeviceAnalytics';
+import DeviceAnalytics from './pages/analytics/DeviceAnalytics';
 import TestimonialPage from './components/TestimonialPage';
 import DonateUs from './pages/DonateUs';
 import { useUser } from '@clerk/clerk-react';
 import { API_URL } from './services/helper';
-import UserManagement from './pages/UserManagement';
-import AllCampaign from './pages/AllCampaign';
+import UserManagement from './pages/admin/UserManagement';
+import AllCampaign from './pages/admin/AllCampaign';
+import GettingStarted from './pages/GettingStarted';
+import TemplateLibrary from './pages/admin/TemplateLibrary';
 
 const saveUserToDB = async (user) => {
   const response = await fetch(`${API_URL}/api/auth/login`, {
@@ -54,13 +56,11 @@ const App = () => {
     }
   }, [user]);
 
-  const hideNavbarAndFooterRoutes = ['/admin', '/developer'];
-
-  const showNavbarAndFooter = !hideNavbarAndFooterRoutes.includes(location.pathname);
+  const hideNavbarAndFooter = location.pathname.startsWith('/admin') || location.pathname.startsWith('/developer');
 
   return (
     <>
-      {showNavbarAndFooter && <Navbar />}
+      {!hideNavbarAndFooter && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
       </Routes>
@@ -74,23 +74,26 @@ const App = () => {
             <Route path="campaign-form" element={<CampaignForm />} />
             <Route path="campaign-form/:id" element={<CampaignForm />} />
             <Route path="all-campaigns" element={<CampaignsList />} />
-            <Route path="select-template" element={<SelectTemplate />} /> 
+            <Route path="select-template" element={<SelectTemplate />} />
             <Route path="schedulemails" element={<ScheduleMails />} />
             <Route path="deviceanalytics" element={<DeviceAnalytics />} />
           </Route>
           <Route path="/create-template" element={<EmailTemplateCreator />} />
+          <Route path="/started" element={<GettingStarted />} />
           <Route path="/analytics" element={<Analytics />} />
-          <Route path="/admin" element={<ProtectedRoute roles={['admin']}><Admin /></ProtectedRoute>} />
+          <Route path="/admin" element={<ProtectedRoute roles={['admin']}><Admin /></ProtectedRoute>}>
+            <Route path="feedbacklist" element={<FeedbackList />} />
+            <Route path="usermanagement" element={<UserManagement />} />
+            <Route path="campaignadmin" element={<AllCampaign />} />
+            <Route path="template" element={<TemplateLibrary />} />
+          </Route>
           <Route path="/developer" element={<ProtectedRoute roles={['developer']}><Developer /></ProtectedRoute>} />
           <Route path="/feedback" element={<Feedback />} />
           <Route path="/donate" element={<DonateUs />} />
           <Route path="/testimonial" element={<TestimonialPage />} />
-          <Route path="/feedbacklist" element={<FeedbackList />} />
-          <Route path='/usermanagement' element={<UserManagement/>}/>
-          <Route path='/campaignadmin' element={<AllCampaign/>}/>
         </Routes>
       </SignedIn>
-      {showNavbarAndFooter && <Footer />}
+      {!hideNavbarAndFooter && <Footer />}
     </>
   );
 };

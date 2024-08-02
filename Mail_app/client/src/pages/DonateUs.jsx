@@ -3,7 +3,7 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import donationImage from './campainglogo.png';
+import donationImage from '../images/campainglogo.png';
 import { API_URL } from '../services/helper';
 import GridPattern from '@/components/magicui/grid-pattern';
 import Marquee from '@/components/magicui/marquee';

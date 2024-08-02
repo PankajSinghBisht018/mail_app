@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Container, Typography, Avatar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { Box, Container, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import axios from 'axios';
 import { Skeleton } from '@/components/ui/skeleton';
-import GridPattern from '@/components/magicui/grid-pattern';
 import { useAuth } from '@clerk/clerk-react';
 import { API_URL } from '@/services/helper';
 
@@ -31,7 +30,6 @@ const AllCampaign = () => {
   return (
     <div className="bg-white min-h-screen flex justify-center">
       <Container>
-        <GridPattern />
         <Typography variant="h4" component="h2" className="text-center my-4">
           All Campaigns
         </Typography>

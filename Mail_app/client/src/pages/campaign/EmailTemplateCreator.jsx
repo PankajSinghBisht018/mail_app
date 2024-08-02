@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import EmailEditor from 'react-email-editor';
-import sample from './savefile.json';
 import axios from 'axios';
 import SaveIcon from '@mui/icons-material/Save';
 import SendIcon from '@mui/icons-material/Send';
@@ -46,7 +45,7 @@ const EmailTemplateCreator = () => {
     if (state && state.design) {
       emailEditorRef.current.editor.loadDesign(state.design);
     } else {
-      emailEditorRef.current.editor.loadDesign(sample);
+      emailEditorRef.current.editor.loadDesign({});
     }
   };
 

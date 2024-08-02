@@ -119,6 +119,7 @@ const CampaignForm = () => {
                   id="campaignName"
                   name="campaignName"
                   label="Campaign Name"
+                  placeholder='Name'
                   variant="outlined"
                   fullWidth
                   value={campaignName}
@@ -130,6 +131,7 @@ const CampaignForm = () => {
                   id="from"
                   name="from"
                   label="From"
+                  placeholder='example@gmail.com'
                   variant="outlined"
                   fullWidth
                   value={formData.from}
@@ -141,6 +143,7 @@ const CampaignForm = () => {
                   id="to"
                   name="to"
                   label="To"
+                  placeholder='example@gmail.com'
                   variant="outlined"
                   fullWidth
                   value={formData.to}
@@ -152,6 +155,7 @@ const CampaignForm = () => {
                   id="subject"
                   name="subject"
                   label="Subject"
+                  placeholder='Subject'
                   variant="outlined"
                   fullWidth
                   value={formData.subject}
