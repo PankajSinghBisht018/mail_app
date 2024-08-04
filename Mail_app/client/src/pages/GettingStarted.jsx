@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Container, Typography, Box } from '@mui/material';
+import { Container, Typography, Box, useMediaQuery } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import GridPattern from '@/components/magicui/grid-pattern';
 import { motion } from 'framer-motion';
@@ -45,6 +45,8 @@ const GettingStarted = () => {
   const selectTemplateRef = useRef(null);
   const sendTemplateRef = useRef(null);
 
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const scrollToSection = (ref) => {
     window.scrollTo({
       top: ref.current.offsetTop - 60,
@@ -54,51 +56,53 @@ const GettingStarted = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ display: 'flex', minHeight: '100vh', position: 'relative'}}>
-        <GridPattern  />
+      <Box sx={{ display: 'flex', minHeight: '100vh', position: 'relative' }}>
+        <GridPattern />
 
-        <Box
-          sx={{
-            width: '240px',
-            position: 'sticky',
-            top: 0,
-            height: '100vh',
-            bgcolor: 'white',
-            p: 2,
-            boxShadow: 1,
-            overflowY: 'auto',
-            zIndex: 1,
-            borderRight: '1px solid #ddd',
-            '& ul': {
-              paddingLeft: 0,
-            },
-            '& li': {
-              cursor: 'pointer',
-              marginBottom: '10px',
-              transition: 'color 0.3s, background-color 0.3s',
-              '&:hover': {
-                color: '#000',
-                backgroundColor: '#fdfa72',
-                fontWeight:'bold',
-                borderRadius: '4px',
-                padding: '2px 4px',
+        {!isMobile && (
+          <Box
+            sx={{
+              width: '240px',
+              position: 'sticky',
+              top: 0,
+              height: '100vh',
+              bgcolor: 'white',
+              p: 2,
+              boxShadow: 1,
+              overflowY: 'auto',
+              zIndex: 1,
+              borderRight: '1px solid #ddd',
+              '& ul': {
+                paddingLeft: 0,
               },
-            },
-          }}
-        >
-          <Typography variant="h4" gutterBottom>
-            Content
-          </Typography>
-          <ul>
-            <li onClick={() => scrollToSection(loginRef)}>Login With Your Account</li>
-            <li onClick={() => scrollToSection(campaignRef)}>Go To Campaign</li>
-            <li onClick={() => scrollToSection(createCampaignRef)}>Create Your Campaign</li>
-            <li onClick={() => scrollToSection(fillFormRef)}>Fill The Campaign Form</li>
-            <li onClick={() => scrollToSection(templatesRef)}>Choose Your Templates</li>
-            <li onClick={() => scrollToSection(selectTemplateRef)}>Select Your Template</li>
-            <li onClick={() => scrollToSection(sendTemplateRef)}>Send Your Template</li>
-          </ul>
-        </Box>
+              '& li': {
+                cursor: 'pointer',
+                marginBottom: '10px',
+                transition: 'color 0.3s, background-color 0.3s',
+                '&:hover': {
+                  color: '#000',
+                  backgroundColor: '#fdfa72',
+                  fontWeight: 'bold',
+                  borderRadius: '4px',
+                  padding: '2px 4px',
+                },
+              },
+            }}
+          >
+            <Typography variant="h4" gutterBottom>
+              Content
+            </Typography>
+            <ul>
+              <li onClick={() => scrollToSection(loginRef)}>Login With Your Account</li>
+              <li onClick={() => scrollToSection(campaignRef)}>Go To Campaign</li>
+              <li onClick={() => scrollToSection(createCampaignRef)}>Create Your Campaign</li>
+              <li onClick={() => scrollToSection(fillFormRef)}>Fill The Campaign Form</li>
+              <li onClick={() => scrollToSection(templatesRef)}>Choose Your Templates</li>
+              <li onClick={() => scrollToSection(selectTemplateRef)}>Select Your Template</li>
+              <li onClick={() => scrollToSection(sendTemplateRef)}>Send Your Template</li>
+            </ul>
+          </Box>
+        )}
 
         <Container maxWidth="md" sx={{ py: 1, position: 'relative', zIndex: 1 }}>
           <motion.div
@@ -106,7 +110,7 @@ const GettingStarted = () => {
             initial="hidden"
             animate="visible"
           >
-            <Typography variant="h3" align="left" sx={{paddingTop:'5vh'}}gutterBottom>
+            <Typography variant="h3" align="left" sx={{ paddingTop: '5vh' }} gutterBottom>
               Getting Started with Mail Vista
             </Typography>
 
@@ -124,6 +128,7 @@ const GettingStarted = () => {
                 variants={animationVariants}
                 initial="hidden"
                 animate="visible"
+                sx={{ maxWidth: '100%', height: 'auto' }}
               >
                 <source src={videoGuide} type="video/mp4" />
                 Your browser does not support the video tag.
@@ -165,7 +170,7 @@ const GettingStarted = () => {
               <motion.img
                 src={login}
                 alt="Login"
-                style={{ width: '30%', height: 'auto', marginTop: '1rem', border: '2px solid #ddd', borderRadius: '8px', padding: '10px' }}
+                style={{ width: '40%', height: 'auto', marginTop: '1rem', border: '2px solid #ddd', borderRadius: '8px', padding: '10px' }}
                 variants={animationVariants}
                 initial="hidden"
                 animate="visible"
@@ -218,7 +223,7 @@ const GettingStarted = () => {
               <motion.img
                 src={create}
                 alt="Create Campaign"
-                style={{ width: '30%', height: 'auto', marginTop: '1rem', border: '2px solid #ddd', borderRadius: '8px', padding: '10px' }}
+                style={{ width: '40%', height: 'auto', marginTop: '1rem', border: '2px solid #ddd', borderRadius: '8px', padding: '10px' }}
                 variants={animationVariants}
                 initial="hidden"
                 animate="visible"
@@ -240,7 +245,7 @@ const GettingStarted = () => {
               </Typography>
               <motion.img
                 src={form}
-                alt="Fill Form"
+                alt="Fill The Campaign Form"
                 style={{ width: '50%', height: 'auto', marginTop: '1rem', border: '2px solid #ddd', borderRadius: '8px', padding: '10px' }}
                 variants={animationVariants}
                 initial="hidden"
@@ -286,8 +291,8 @@ const GettingStarted = () => {
               </Typography>
               <motion.img
                 src={select}
-                alt="Select Template"
-                style={{ width: '70%', height: 'auto', marginTop: '1rem', border: '2px solid #ddd', borderRadius: '8px', padding: '10px' }}
+                alt="Select Your Template"
+                style={{ width: '100%', height: 'auto', marginTop: '1rem', border: '2px solid #ddd', borderRadius: '8px', padding: '10px' }}
                 variants={animationVariants}
                 initial="hidden"
                 animate="visible"
@@ -309,8 +314,8 @@ const GettingStarted = () => {
               </Typography>
               <motion.img
                 src={sendtemplate}
-                alt="Send Template"
-                style={{ width: '80%', height: 'auto', marginTop: '1rem', border: '2px solid #ddd', borderRadius: '8px', padding: '10px' }}
+                alt="Send Your Template"
+                style={{ width: '100%', height: 'auto', marginTop: '1rem', border: '2px solid #ddd', borderRadius: '8px', padding: '10px' }}
                 variants={animationVariants}
                 initial="hidden"
                 animate="visible"

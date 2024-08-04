@@ -178,10 +178,12 @@ const TemplateLibrary = () => {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleDialogClose} className="bg-gradient-to-r from-yellow-500 to-orange-600 text-white hover:bg-yellow-600">
+            <Button onClick={handleDialogClose} variant="contained" className="bg-gradient-to-r from-yellow-500 to-orange-600 text-white hover:bg-yellow-600"
+           >
               Cancel
             </Button>
-            <Button onClick={handleSave} className="bg-gradient-to-r from-yellow-500 to-orange-600 text-white hover:bg-yellow-600">
+            <Button onClick={handleSave} variant="contained" className="bg-gradient-to-r from-yellow-500 to-orange-600 text-white hover:bg-yellow-600"
+            >
               Save
             </Button>
           </DialogActions>

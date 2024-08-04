@@ -10,13 +10,18 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  imageUrl:{
-    type:String,
+  imageUrl: {
+    type: String,
   },
   email: {
     type: String,
     required: true,
     unique: true,
+  },
+  role: {  
+    type: String,
+    enum: ['admin', 'developer', 'user'], 
+    default: 'user',  
   },
   createdAt: {
     type: Date,

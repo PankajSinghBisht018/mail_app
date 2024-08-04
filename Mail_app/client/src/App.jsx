@@ -38,6 +38,8 @@ const saveUserToDB = async (user) => {
       clerkUserId: user.id,
       name: `${user.firstName} ${user.lastName}`,
       email: user.primaryEmailAddress.emailAddress,
+      role: user.publicMetadata.role,
+      imageUrl: user.imageUrl 
     }),
   });
 

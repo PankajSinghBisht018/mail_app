@@ -39,7 +39,6 @@ const AllCampaign = () => {
               <div className="animate-pulse">
                 <Skeleton className="h-6 bg-gray-600 rounded-md mb-2" />
                 <Skeleton className="h-6 bg-gray-600 rounded-md mb-2" />
-                <Skeleton className="h-96 bg-gray-600 rounded-md mb-2" />
               </div>
             ) : (
               <Table>
@@ -47,7 +46,6 @@ const AllCampaign = () => {
                   <TableRow>
                     <TableCell style={{ color: 'white' }}>Name</TableCell>
                     <TableCell style={{ color: 'white' }}>Subject</TableCell>
-                    <TableCell style={{ color: 'white' }}>To</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -55,7 +53,6 @@ const AllCampaign = () => {
                     <TableRow key={campaign._id}>
                       <TableCell style={{ color: 'white' }}>{campaign.name}</TableCell>
                       <TableCell style={{color:'white'}}>{campaign.subject}</TableCell>
-                      <TableCell style={{color:'white'}}>{campaign.to}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

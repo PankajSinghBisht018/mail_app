@@ -16,13 +16,13 @@ function Contact() {
     let description = '';
     switch (value) {
       case 'support':
-        description = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos blanditiis nihil quas pariatur aperiam ipsum ut delectus iste, quidem hic aspernatur nesciunt nostrum, laudantium neque itaque soluta.';
+        description = 'Need help with technical issues? Our support team is here to assist you with any problems you may encounter. Reach out via email or phone during our business hours for prompt and professional assistance. Your satisfaction is our priority.';
         break;
       case 'account':
         description = 'If you have any issues accessing your account, please let us know.';
         break;
       default:
-        description = '';
+        description = 'For any additional queries, please email us or start a chat for immediate assistance';
     }
 
     setTopicDescription(description);

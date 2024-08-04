@@ -11,6 +11,8 @@ const emailTrackingRoutes = require('./routes/emailTrackingRoutes');
 const authRoutes = require('./routes/userRoutes');
 const templateRoutes = require('./routes/templateRoutes');
 
+
+
 require('dotenv').config();
 
 const app = express();
@@ -19,6 +21,8 @@ const PORT = process.env.PORT || 8000;
 app.use(cors());
 app.use(express.json());
 connectDB();
+
+
 
 app.get('/', (req, res) => {
   res.send('Mail app!');

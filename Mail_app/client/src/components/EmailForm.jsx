@@ -97,45 +97,103 @@ const EmailForm = () => {
       <h1 className="text-xl font-bold text-center">Contact Us</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex items-center">
-          <label htmlFor="subject" className="w-20 font-semibold text-gray-600">Subject:</label>
+          <label htmlFor="subject" className="w-24 font-semibold text-gray-600">Subject:</label>
           <span className="p-float-label flex-1">
-            <InputText id="subject" name="subject" value={emailData.subject} onChange={handleChange} className="w-full border-4" />
+            <InputText 
+              id="subject" 
+              name="subject" 
+              value={emailData.subject} 
+              onChange={handleChange} 
+              className="w-full border-2 p-2" 
+              placeholder='Subject'
+              style={{ fontSize: '16px' }}
+            />
           </span>
         </div>
         <div className="mb-4 flex items-center">
-          <label htmlFor="recipient" className="w-20 font-semibold text-gray-600">Recipient:</label>
+          <label htmlFor="recipient" className="w-24 font-semibold text-gray-600">Recipient:</label>
           <span className="p-float-label flex-1">
-            <InputText id="recipient" name="recipient" value={emailData.recipient} onChange={handleChange} className="w-full border-4" />
+            <InputText 
+              id="recipient" 
+              name="recipient" 
+              value={emailData.recipient} 
+              onChange={handleChange} 
+              className="w-full border-2 p-2" 
+              placeholder='example@gmail.com'
+              style={{ fontSize: '16px' }}
+            />
           </span>
         </div>
         <div className="mb-4 flex items-center">
-          <label htmlFor="body" className="w-20 font-semibold text-gray-600">Body:</label>
+          <label htmlFor="body" className="w-24 font-semibold text-gray-600">Message:</label>
           <span className="p-float-label flex-1">
-            <InputTextarea id="body" name="body" value={emailData.body} onChange={handleChange} rows={5} className="w-full border-4" style={{ fontSize: '24px' }} />
+            <InputTextarea 
+              id="body" 
+              name="body" 
+              value={emailData.body} 
+              onChange={handleChange} 
+              rows={5} 
+              className="w-full border-2 p-2" 
+              placeholder='Message'
+              style={{ fontSize: '16px' }} 
+            />
           </span>
         </div>
         <div className="mb-4 flex items-center">
-          <label htmlFor="sender" className="w-20 font-semibold text-gray-600">Sender:</label>
+          <label htmlFor="sender" className="w-24 font-semibold text-gray-600">Sender:</label>
           <span className="p-float-label flex-1">
-            <InputText id="sender" name="sender" value={user ? user.primaryEmailAddress : ''} readOnly className="w-full border-4" />
+            <InputText 
+              id="sender" 
+              name="sender" 
+              value={user ? user.primaryEmailAddress : ''} 
+              readOnly 
+              className="w-full border-2 p-2" 
+              placeholder='example@gmail.com'
+              style={{ fontSize: '16px' }}
+            />
           </span>
         </div>
         <div className="mb-4 flex items-center">
-          <label htmlFor="cc" className="w-20 font-semibold text-gray-600">CC:</label>
+          <label htmlFor="cc" className="w-24 font-semibold text-gray-600">CC:</label>
           <span className="p-float-label flex-1">
-            <InputText id="cc" name="cc" value={emailData.cc} onChange={handleChange} className="w-full border-4" />
+            <InputText 
+              id="cc" 
+              name="cc" 
+              value={emailData.cc} 
+              onChange={handleChange}
+              placeholder='example@gmail.com'
+              className="w-full border-2 p-2" 
+              style={{ fontSize: '16px' }}
+            />
           </span>
         </div>
         <div className="mb-4 flex items-center">
-          <label htmlFor="bcc" className="w-20 font-semibold text-gray-600">BCC:</label>
+          <label htmlFor="bcc" className="w-24 font-semibold text-gray-600">BCC:</label>
           <span className="p-float-label flex-1">
-            <InputText id="bcc" name="bcc" value={emailData.bcc} onChange={handleChange} className="w-full border-4" />
+            <InputText 
+              id="bcc" 
+              name="bcc" 
+              value={emailData.bcc} 
+              onChange={handleChange} 
+              className="w-full border-2 p-2"
+              placeholder='example@gmail.com' 
+              style={{ fontSize: '16px' }}
+            />
           </span>
         </div>
         <div className="mb-4 flex items-center">
-          <label htmlFor="scheduleDate" className="w-20 font-semibold text-gray-600">Schedule:</label>
+          <label htmlFor="scheduleDate" className="w-24 font-semibold text-gray-600">Schedule:</label>
           <span className="p-float-label flex-1">
-            <Calendar id="scheduleDate" name="scheduleDate" value={emailData.scheduleDate} onChange={handleChange} showTime showSeconds className="w-full border-4" placeholder="Select Schedule Date & Time" />
+            <Calendar 
+              id="scheduleDate" 
+              name="scheduleDate" 
+              value={emailData.scheduleDate} 
+              onChange={handleChange} 
+              showTime 
+              showSeconds 
+              className="w-full border-2 p-2" 
+              placeholder="Select Schedule Date & Time"
+            />
           </span>
         </div>
         <div className="flex space-x-4">
@@ -143,14 +201,14 @@ const EmailForm = () => {
             label="Send Now" 
             icon="pi pi-check" 
             type="submit" 
-            className="w-full bg-gradient-to-r from-yellow-500 to-yellow-400 text-yellow-100 rounded-md pr-4 pl-4 hover:from-yellow-400 hover:to-yellow-300"
+            className="w-full bg-gradient-to-r from-yellow-500 to-orange-600 text-white hover:bg-yellow-600 rounded-md pr-4 pl-4"
           />
           <Button 
             label="Schedule Email" 
             icon="pi pi-calendar" 
             type="button" 
             onClick={handleSchedule} 
-            className="w-full bg-gradient-to-r from-yellow-500 to-yellow-400 text-yellow-100 rounded-md pr-4 pl-4 hover:from-yellow-400 hover:to-yellow-300"
+            className="w-full bg-gradient-to-r from-yellow-500 to-orange-600 text-white hover:bg-yellow-600 rounded-md pr-4 pl-4"
           />
         </div>
       </form>
