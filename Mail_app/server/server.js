@@ -7,10 +7,8 @@ const tempEmailRoutes = require('./routes/tempEmailRoutes');
 const campaignRoutes = require('./routes/campaignRoutes');
 const surveyRoutes = require('./routes/surveyRoutes');
 const orderRoutes = require('./routes/orderRoutes');
-const emailTrackingRoutes = require('./routes/emailTrackingRoutes');
 const authRoutes = require('./routes/userRoutes');
 const templateRoutes = require('./routes/templateRoutes');
-
 
 
 require('dotenv').config();
@@ -22,8 +20,6 @@ app.use(cors());
 app.use(express.json());
 connectDB();
 
-
-
 app.get('/', (req, res) => {
   res.send('Mail app!');
 });
@@ -34,7 +30,7 @@ app.use('/api', tempEmailRoutes);
 app.use('/api', campaignRoutes); 
 app.use('/api', surveyRoutes);
 app.use('/api', orderRoutes);
-app.use('/api', emailTrackingRoutes);
+
 app.use('/api', templateRoutes);
 
 app.listen(PORT, () => {

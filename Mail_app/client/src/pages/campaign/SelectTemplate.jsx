@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { API_URL } from '@/services/helper';
+import { Helmet } from 'react-helmet-async';
 
 const SelectTemplate = () => {
   const navigate = useNavigate();
@@ -28,12 +29,12 @@ const SelectTemplate = () => {
       parsedDesign = JSON.parse(template.design);
     } catch (error) {
       console.error('Invalid JSON format in template design:', error);
-      return; 
+      return;
     }
 
     navigate('/create-template', {
       state: {
-        design: parsedDesign, 
+        design: parsedDesign,
         from,
         to,
         subject,
@@ -44,34 +45,37 @@ const SelectTemplate = () => {
 
   return (
     <div className="relative min-h-screen">
-      <div className="absolute inset-0 z-0">
-      </div>
+      <Helmet>
+        <title>Mail Vista - Templates  </title>
+        <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/666/666162.png" type="image/png" />
+      </Helmet>
+      <div className="absolute inset-0 z-0"></div>
       <div className="relative z-10 flex flex-col items-center min-h-screen p-4">
-        <h1 className="text-4xl font-bold mb-8 text-center text-black">Select a Template</h1>
-        <div className="flex flex-wrap justify-center gap-8">
+        <h1 className="text-4xl font-bold mb-8 text-center">Select a Template</h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {templates.map((template) => (
             <div
               key={template._id}
-              className="bg-white text-black rounded-lg shadow-lg cursor-pointer w-full max-w-xs md:max-w-sm lg:max-w-md flex flex-col"
+              className="bg-white text-black rounded-lg shadow-lg cursor-pointer w-full flex flex-col transition-transform transform hover:scale-105"
               onClick={() => handleSelectTemplate(template)}
             >
-              <div className="flex-1 flex flex-col p-4">
-                {template.imageUrl && (
+              {template.imageUrl && (
+                <div className="flex-1">
                   <img
-                    src={template.imageUrl} 
+                    src={template.imageUrl}
                     alt={template.name}
-                    className="mb-4 w-full h-56 object-cover rounded-lg"
+                    className="w-full h-56 object-cover rounded-t-lg"
                   />
-                )}
-                <h2 className="text-xl font-bold mb-4">{template.name}</h2>
-                <div className="mt-auto">
-                  <button
-                    className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded-md w-full"
-                    onClick={() => handleSelectTemplate(template)}
-                  >
-                    Select Template
-                  </button>
                 </div>
+              )}
+              <div className="p-4 flex flex-col">
+                <h2 className="text-xl font-bold mb-2">{template.name}</h2>
+                <button
+                  className="bg-gradient-to-r from-yellow-500 to-orange-600 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-md w-full"
+                  onClick={() => handleSelectTemplate(template)}
+                >
+                  Select Template
+                </button>
               </div>
             </div>
           ))}

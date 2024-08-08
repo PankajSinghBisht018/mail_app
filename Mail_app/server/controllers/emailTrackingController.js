@@ -1,43 +1,70 @@
-const EmailEvent = require('../models/Device'); 
-const UAParser = require('ua-parser-js'); 
+const EmailTracking = require('../models/EmailTracking');
+const EmailTemplate = require('../models/EmailTemplate');
 
-const trackEmailOpen = async (req, res) => {
-  const { emailId, recipient } = req.query;
-  const userAgent = req.headers['user-agent'] || 'unknown';
+const transparentImage = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAgAB/ah8ksAAAAAASUVORK5CYII=";
 
+const trackEmail = async (req, res) => {
+  const { trackingId } = req.params;
+ 
   try {
-    const emailEvent = new EmailEvent({
-      emailId,
-      recipient,
-      openedAt: new Date(),
-      deviceType: getDeviceType(userAgent),
-    });
-    await emailEvent.save();
-    res.writeHead(200, {
-      'Content-Type': 'image/gif',
-      'Content-Length': 0,
-    });
-    res.end();
+    console.log(`Received tracking request for ID: ${trackingId}`);
+
+    const email = await EmailTemplate.findOne({ trackingId });
+
+    if (email) {
+      console.log(`Email found for tracking ID: ${trackingId}`);
+
+      const trackingEntry = await EmailTracking.findOneAndUpdate(
+        { emailId: email._id, recipient: email.recipient, userId:email.userId },
+        { $inc: { openCount: 1 }, $set: { openedAt: new Date() } },
+        { upsert: true, new: true }
+      );
+
+      console.log(`Tracking entry updated:`, trackingEntry);
+
+      const imgBuffer = Buffer.from(transparentImage.split(',')[1], 'base64');
+
+      res.writeHead(200, {
+        'Content-Type': 'image/png',
+        'Content-Length': imgBuffer.length
+      });
+      res.end(imgBuffer);
+    } else {
+      console.log(`Tracking ID ${trackingId} not found in database`);
+      res.status(404).send({ message: 'Tracking ID not found' });
+    }
   } catch (error) {
-    console.error('Error tracking email open:', error);
-    res.status(500).send({ message: 'Failed to track email open', error });
+    console.error('Error tracking email:', error);
+    res.status(500).send({ message: 'Failed to track email', error });
   }
 };
+const getEmailOpenStats = async (req, res) => {
+  const userId = req.auth.userId; 
 
-const getDeviceType = (userAgent) => {
-  const parser = new UAParser(userAgent);
-  const result = parser.getResult();
-  return result.device.type || 'unknown';
-};
-
-const getEmailEvents = async (req, res) => {
   try {
-    const emailEvents = await EmailEvent.find({});
-    res.status(200).json(emailEvents);
+    const openStats = await EmailTracking.aggregate([
+      { $match: { userId } },
+      {
+        $project: {
+          date: {
+            $dateToString: { format: "%Y-%m-%d", date: "$openedAt" } 
+          },
+          openCount: 1
+        }
+      },
+      {
+        $group: {
+          _id: "$date", 
+          count: { $sum: "$openCount" } 
+        }
+      },
+      { $sort: { _id: 1 } } 
+    ]);
+
+    res.status(200).json(openStats);
   } catch (error) {
-    console.error('Error fetching email events:', error);
-    res.status(500).send({ message: 'Failed to fetch email events.', error });
+    console.error('Error fetching email open stats:', error);
+    res.status(500).send({ message: 'Failed to fetch email open stats.', error });
   }
 };
-
-module.exports = { trackEmailOpen, getEmailEvents };
+module.exports = { trackEmail, getEmailOpenStats };

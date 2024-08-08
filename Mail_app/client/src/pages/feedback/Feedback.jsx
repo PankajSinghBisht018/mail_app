@@ -64,12 +64,12 @@ const Feedback = () => {
   };
 
   return (
-    <div className="bg-white min-h-screen flex justify-center items-center">
+    <div className="min-h-screen flex justify-center items-center">
       <GridPattern/>
       <Container>
         <ToastContainer position='top-right' />
         <Modal open={open} onClose={handleClose}>
-          <Box sx={modalStyle} className="bg-white rounded-lg p-6 relative">
+          <Box sx={modalStyle} className="text-black rounded-lg p-6 relative">
             <IconButton 
               onClick={handleClose} 
               sx={{ position: 'absolute', top: 8, right: 8, color: 'red' }}

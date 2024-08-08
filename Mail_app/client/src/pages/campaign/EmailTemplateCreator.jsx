@@ -16,6 +16,7 @@ import { API_URL } from '../../services/helper';
 import GridPattern from '@/components/magicui/grid-pattern';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { useUser, useAuth } from '@clerk/clerk-react';
+import { Helmet } from 'react-helmet-async';
 
 const EmailTemplateCreator = () => {
   const location = useLocation();
@@ -189,12 +190,16 @@ const EmailTemplateCreator = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-white">
+    <div className="relative min-h-screen">
+      <Helmet>
+        <title>Mail Vista - Editor  </title>
+        <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/666/666162.png" type="image/png" />
+      </Helmet>
       <div className="absolute inset-0 z-0">
         <GridPattern />
       </div>
       <div className="relative z-10 min-h-screen px-4 py-8">
-        <h1 className="text-3xl font-bold mb-4 text-center text-black">Email Template Editor</h1>
+        <h1 className="text-3xl font-bold mb-4 text-center">Email Template Editor</h1>
         <div className="mb-4 flex justify-center items-center">
           <div id="email-editor-container">
             <EmailEditor

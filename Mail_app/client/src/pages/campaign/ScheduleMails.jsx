@@ -89,7 +89,7 @@ const ScheduleMails = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               variant="outlined"
               placeholder="Search by subject or recipient"
-              className="mr-2 rounded-full"
+              className="mr-2 rounded-full bg-slate-50"
               size="small"
               sx={{ marginBottom: '20px', width: '300px' }}
               InputProps={{
@@ -115,7 +115,7 @@ const ScheduleMails = () => {
               filteredEmails.map((email) => (
                 <motion.div
                   key={email._id}
-                  className="p-4 mb-4 bg-gray-400 rounded-md shadow-lg flex justify-between items-center"
+                  className="p-4 mb-4 bg-gray-600 rounded-md shadow-lg flex justify-between items-center"
                   initial={{ opacity: 0, y: 50 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.2 }}

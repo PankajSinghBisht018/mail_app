@@ -9,6 +9,7 @@ const emailTemplateSchema = new mongoose.Schema({
   sentAt: { type: Date },
   scheduledDate: { type: Date },
   isScheduled: { type: Boolean, default: false },
+  trackingId: String,
   sent: { type: Boolean, default: false },
   canceled: { type: Boolean, default: false },
   userId: { type:String , required: true }

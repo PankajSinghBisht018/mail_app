@@ -1,20 +1,32 @@
 const nodemailer = require('nodemailer');
 const EmailTemplate = require('../models/EmailTemplate');
 const cron = require('node-cron');
+const { v4: uuidv4 } = require('uuid');
 
 const sendEmailTemplate = async (req, res) => {
   const { htmlContent, recipients, subject, from, scheduledDate } = req.body;
   const userId = req.auth.userId;
+
+  if (!userId) {
+    return res.status(400).send({ message: 'User ID not found in auth' });
+  }
+
+  const trackingId = uuidv4();
+  const trackingUrl = `https://mail-app-backend-eosb.onrender.com/api/track-email/${trackingId}`;
+
+  const modifiedHtmlContent = htmlContent +
+    `<img src="${trackingUrl}" width="1" height="1" style="display:none;" />`;
 
   if (scheduledDate) {
     try {
       await Promise.all(recipients.map(async (recipient) => {
         const emailTemplate = new EmailTemplate({
           subject,
-          htmlContent,
+          htmlContent: modifiedHtmlContent,
           recipient,
           sender: from,
           scheduledDate,
+          trackingId,
           isScheduled: true,
           userId,
         });
@@ -26,11 +38,11 @@ const sendEmailTemplate = async (req, res) => {
       res.status(500).send({ message: 'Failed to schedule emails.', error });
     }
   } else {
-    sendEmailsImmediately(recipients, subject, htmlContent, from, res, userId);
+    sendEmailsImmediately(recipients, subject, modifiedHtmlContent, from, res, userId, trackingId);
   }
 };
 
-const sendEmailsImmediately = async (recipients, subject, htmlContent, from, res, userId) => {
+const sendEmailsImmediately = async (recipients, subject, htmlContent, from, res, userId, trackingId) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -48,8 +60,6 @@ const sendEmailsImmediately = async (recipients, subject, htmlContent, from, res
         html: htmlContent,
       });
 
-      console.log('Message sent: %s', info.messageId);
-      
       const emailTemplate = new EmailTemplate({
         subject,
         htmlContent,
@@ -59,6 +69,7 @@ const sendEmailsImmediately = async (recipients, subject, htmlContent, from, res
         sentAt: new Date(),
         sent: true,
         userId,
+        trackingId,
       });
       await emailTemplate.save();
     }));
@@ -210,4 +221,4 @@ cron.schedule('* * * * *', async () => {
   }
 });
 
-module.exports = {sendEmailTemplate,getEmailEvents,getEmailEventsForGraph,getTemplateUsageCounts,cancelEmailSchedule,sendEmailNow};
+module.exports = { sendEmailTemplate, getEmailEvents, getEmailEventsForGraph, getTemplateUsageCounts, cancelEmailSchedule, sendEmailNow };
