@@ -29,6 +29,9 @@ import UserManagement from './pages/admin/UserManagement';
 import AllCampaign from './pages/admin/AllCampaign';
 import GettingStarted from './pages/GettingStarted';
 import TemplateLibrary from './pages/admin/TemplateLibrary';
+import Qna from './pages/Qna';
+import { HelmetProvider } from 'react-helmet-async';
+import { ThemeProvider } from './components/ThemeProvider'; 
 
 const saveUserToDB = async (user) => {
   const response = await fetch(`${API_URL}/api/auth/login`, {
@@ -58,7 +61,7 @@ const App = () => {
     }
   }, [user]);
 
-  const hideNavbarAndFooter = location.pathname.startsWith('/admin') || location.pathname.startsWith('/developer');
+  const hideNavbarAndFooter = location.pathname.startsWith('/admin') || location.pathname.startsWith('/developer') || location.pathname.startsWith('/qna');
 
   return (
     <>
@@ -93,6 +96,7 @@ const App = () => {
           <Route path="/feedback" element={<Feedback />} />
           <Route path="/donate" element={<DonateUs />} />
           <Route path="/testimonial" element={<TestimonialPage />} />
+          <Route path="/qna" element={<Qna />} />
         </Routes>
       </SignedIn>
       {!hideNavbarAndFooter && <Footer />}
@@ -101,9 +105,13 @@ const App = () => {
 };
 
 const AppWrapper = () => (
+  <HelmetProvider>
+  <ThemeProvider>
   <Router>
     <App />
   </Router>
+  </ThemeProvider>
+  </HelmetProvider>
 );
 
 export default AppWrapper;
