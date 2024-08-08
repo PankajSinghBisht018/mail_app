@@ -8,6 +8,7 @@ import { API_URL } from '../services/helper';
 import GridPattern from '@/components/magicui/grid-pattern';
 import Marquee from '@/components/magicui/marquee';
 import { CoolMode } from '@/components/magicui/cool-mode';
+import { Helmet } from 'react-helmet-async';
 
 const DonateUs = () => {
   const [selectedAmount, setSelectedAmount] = useState('');
@@ -65,12 +66,16 @@ const DonateUs = () => {
   };
 
   return (
-    <div className="bg-white text-center my-4 relative">
+    <div className="text-center relative">
+        <Helmet>
+        <title>Mail Vista - Donate   </title>
+        <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/666/666162.png" type="image/png" />
+      </Helmet>
       <GridPattern className="absolute inset-0 z-0" patternColor="white" />
       <div className="relative z-10">
         <div className="relative">
-          <img src="https://www.genyuvaa.com/images/t_slider_1.jpg" alt="Children" className="w-full h-64 object-cover hidden md:block" />
-          <h2 className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center text-2xl font-bold text-white bg-black bg-opacity-50 py-4">Your Donation Will Provide...</h2>
+          <img src="https://www.genyuvaa.com/images/t_slider_1.jpg" alt="Children" className="w-full h-64 object-cover " />
+          <h2 className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center text-2xl font-bold bg-opacity-50 py-4">Your Donation Will Provide...</h2>
         </div>
         <div className="my-8 mx-5 max-w-screen">
           <div className="grid md:grid-cols-2 gap-8 items-center">
@@ -83,7 +88,7 @@ const DonateUs = () => {
                   <motion.div
                     key={amount.value}
                     onClick={() => setSelectedAmount(amount.value)}
-                    className={`p-6 cursor-pointer border rounded-lg ${selectedAmount === amount.value ? 'bg-yellow-100' : 'bg-gray-100'} hover:bg-gray-200 transition duration-300 ease-in-out`}
+                    className={`p-6 cursor-pointer border rounded-lg ${selectedAmount === amount.value ? 'bg-yellow-100 text-black ' : 'bg-white text-black'} hover:bg-gray-200 transition duration-300 ease-in-out`}
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.3 }}
                   >
@@ -105,7 +110,7 @@ const DonateUs = () => {
                 onSubmit={handleSubmit}
               >
                 {({ isSubmitting }) => (
-                  <Form className="flex flex-col space-y-4 max-w-md mx-auto">
+                  <Form className="flex flex-col space-y-4 max-w-md mx-auto text-black">
                     <Field name="donationAmount" type="hidden" />
                     <Field name="donorName" placeholder="Your Name" className="p-3 border rounded-lg w-full" />
                     <ErrorMessage name="donorName" component="div" className="text-red-500" />
@@ -146,7 +151,7 @@ const DonateUs = () => {
           <div className="relative w-full overflow-hidden">
             <Marquee className="flex space-x-4">
               {latestDonations.map((donation) => (
-                <div key={donation._id} className="bg-yellow-100 p-4 rounded-lg shadow-lg flex items-center space-x-4 flex-shrink-0">
+                <div key={donation._id} className="bg-yellow-100 text-black p-4 rounded-lg shadow-lg flex items-center space-x-4 flex-shrink-0">
                   <div className="w-16 h-16 bg-gray-300 rounded-full flex items-center justify-center">
                     <span className="text-white text-xl font-bold">{donation.donorName[0]}</span>
                   </div>

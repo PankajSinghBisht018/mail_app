@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import GridPattern from '@/components/magicui/grid-pattern';
 import TypingAnimation from '@/components/magicui/typing-animation';
 import ChatBot from '@/components/ChatBot';
+import { Helmet } from 'react-helmet-async';
 
 function Contact() {
   const [selectedTopic, setSelectedTopic] = useState('');
@@ -29,16 +30,22 @@ function Contact() {
   };
 
   return (
-    <motion.div className="relative bg-white min-h-screen text-black"
+
+    <motion.div className="relative min-h-screen"
       initial={{ opacity: 0, x: -50 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5 }}
     >
+      <Helmet>
+        <title>Mail Vista - Contact  </title>
+        <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/666/666162.png" type="image/png" />
+      </Helmet>
+
       <GridPattern className="absolute inset-0 z-0" patternColor="white" />
       <div className="relative z-10 max-w-7xl mx-auto py-12 px-4 md:px-8">
         <h1 className="text-3xl md:text-4xl font-bold mb-4 text-center">
           <TypingAnimation
-            className="text-4xl font-bold text-black dark:text-white"
+            className="text-4xl font-bold"
             text="Contact Us"
           />
         </h1>
@@ -91,7 +98,7 @@ function Contact() {
           </div>
         </div>
       </div>
-      <ChatBot/>
+      <ChatBot />
     </motion.div>
   );
 }

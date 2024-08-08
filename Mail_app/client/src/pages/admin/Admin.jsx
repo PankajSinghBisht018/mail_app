@@ -5,6 +5,8 @@ import { Navigate, useNavigate, Outlet } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
 import { checkRole } from '../../utils/roles';
 import GridPattern from '@/components/magicui/grid-pattern';
+import { Helmet } from 'react-helmet-async';
+import { useTheme } from '@/components/ThemeProvider';
 
 const drawerWidth = 240;
 
@@ -12,6 +14,7 @@ const Admin = () => {
   const { isLoaded, isSignedIn } = useAuth();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { theme } = useTheme(); 
 
   if (!isLoaded) {
     return <div>Loading...</div>;
@@ -34,7 +37,7 @@ const Admin = () => {
       <Toolbar />
       <List>
         <ListItem
-          className="hover:bg-yellow-100"
+          className="hover:bg-yellow-100 hover:text-black"
           component='button'
           onClick={() => navigate('/')}
         >
@@ -44,7 +47,7 @@ const Admin = () => {
           <ListItemText primary="Home" />
         </ListItem>
         <ListItem
-          className="hover:bg-yellow-100"
+          className="hover:bg-yellow-100 hover:text-black"
           component='button'
           onClick={() => handleItemClick('/admin/usermanagement')}
         >
@@ -54,7 +57,7 @@ const Admin = () => {
           <ListItemText primary="User Management" />
         </ListItem>
         <ListItem
-          className="hover:bg-yellow-100"
+          className="hover:bg-yellow-100 hover:text-black"
           component='button'
           onClick={() => handleItemClick('/admin/campaignadmin')}
         >
@@ -64,7 +67,7 @@ const Admin = () => {
           <ListItemText primary="Campaign" />
         </ListItem>
         <ListItem
-          className="hover:bg-yellow-100"
+          className="hover:bg-yellow-100 hover:text-black"
           component='button'
           onClick={() => handleItemClick('/admin/feedbacklist')}
         >
@@ -74,7 +77,7 @@ const Admin = () => {
           <ListItemText primary="Feedback" />
         </ListItem>
         <ListItem
-          className="hover:bg-yellow-100"
+          className="hover:bg-yellow-100 hover:text-black"
           component='button'
           onClick={() => handleItemClick('/admin/template')}
         >
@@ -89,7 +92,11 @@ const Admin = () => {
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', position: 'relative' }}>
-    <GridPattern />
+      <Helmet>
+        <title>Mail Vista - Admin</title>
+        <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/666/666162.png" type="image/png" />
+      </Helmet>
+      <GridPattern />
       <Box sx={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }}>
       </Box>
       <Drawer
@@ -97,7 +104,7 @@ const Admin = () => {
         sx={{
           width: drawerWidth,
           flexShrink: 0,
-          [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+          [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box', backgroundColor: theme === 'dark' ? '#111827' : 'white', color:theme === 'dark' ? 'white' : 'black'},
           display: { xs: 'none', sm: 'block' },
         }}
       >
@@ -109,14 +116,14 @@ const Admin = () => {
         onClose={handleDrawerToggle}
         sx={{
           display: { xs: 'block', sm: 'none' },
-          '& .MuiDrawer-paper': { width: drawerWidth },
+          '& .MuiDrawer-paper': { width: drawerWidth,backgroundColor: theme === 'dark' ? '#111827' : 'white', color:theme === 'dark' ? 'white' : 'black' },
         }}
       >
         {drawer}
       </Drawer>
       <Box
         component="main"
-        sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
+        sx={{ flexGrow: 1, p: 3 }}
       >
         <IconButton
           color="inherit"

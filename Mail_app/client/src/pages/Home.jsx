@@ -8,6 +8,7 @@ import GridPattern from '@/components/magicui/grid-pattern';
 import hero from '../images/heroimg.png';
 import Meteors from '@/components/magicui/meteors'; 
 import TestimonialPage from '@/components/TestimonialPage';
+import { Helmet } from 'react-helmet-async';
 
 function Home() {
   const { isSignedIn } = useAuth();
@@ -26,13 +27,16 @@ function Home() {
   };
 
   return (
-  <>
-    <div style={{ backgroundColor: 'white', color: '#000', minHeight: '100vh', position: 'relative' , }}>
+  <> 
+    <div style={{ minHeight: '100vh', position: 'relative' , }}>
+    <Helmet>
+        <title>Mail Vista - Home  </title>
+        <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/666/666162.png" type="image/png" />
+      </Helmet>
       <ToastContainer />
       <GridPattern />
       <Box
         sx={{
-          color: '#000',
           minHeight: '50vh',
           display: 'flex',
           alignItems: 'center',
@@ -69,10 +73,9 @@ function Home() {
         className="flex flex-col md:flex-row py-4 px-6 md:px-12"
         initial={{ opacity: 0, x: 800 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 1, delay: 0.5, ease: 'linear' }}
-        style={{ backgroundColor: '#fff' }} 
+        transition={{ duration: 1, delay: 0.5, ease: 'linear' }} 
       >
-        <Paper elevation={3} sx={{ flex: 1, margin: 2, padding: 2, backgroundColor: '#C0C0C0' }}>
+        <Paper elevation={3} sx={{ flex: 1, margin: 2, padding: 2 }}>
           <img
             src={hero} 
             alt="Hero"

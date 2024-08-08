@@ -1,8 +1,9 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 import Marquee from '@/components/magicui/marquee';
-import {Card,CardContent,CardDescription,CardFooter,CardHeader,CardTitle,} from '@/components/ui/card';
-import {Avatar,AvatarFallback,AvatarImage} from '@/components/ui/avatar';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useTheme } from '@/components/ThemeProvider'; 
 
 const testimonials = [
   {
@@ -44,9 +45,11 @@ const testimonials = [
 ];
 
 const TestimonialPage = () => {
+  const { theme } = useTheme(); 
+
   return (
-    <Box sx={{ backgroundColor: 'black', minHeight: '50vh', p: 4 }}>
-      <Typography variant="h3" align="center" color="white" gutterBottom>
+    <Box sx={{ minHeight: '50vh', p: 4, backgroundColor: theme === 'dark' ? 'white' : '#111827' }}>
+      <Typography variant="h3" align="center" gutterBottom color={theme === 'dark' ? 'black' : 'white'}>
         What Our Clients Say
       </Typography>
       <Marquee>
@@ -56,23 +59,21 @@ const TestimonialPage = () => {
             sx={{
               maxWidth: 345,
               m: 2,
-              backgroundColor: 'gray.800',
-              color: 'white',
               textAlign: 'center',
             }}
           >
             <CardHeader>
-              <Avatar sx={{ width: 100, height: 100, mx: 'auto' }}> 
+              <Avatar sx={{ width: 100, height: 100, mx: 'auto' }}>
                 <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
                 <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
               </Avatar>
               <Box sx={{ mt: 1 }}>
                 <CardTitle>{testimonial.name}</CardTitle>
-                <CardDescription sx={{ color: 'black' }}>{testimonial.title}</CardDescription>
+                <CardDescription>{testimonial.title}</CardDescription>
               </Box>
             </CardHeader>
             <CardContent>
-              <Typography variant="body2" color="black">
+              <Typography variant="body2" sx={{color:theme === 'dark' ? 'white' : 'black'}}>
                 {testimonial.message}
               </Typography>
             </CardContent>

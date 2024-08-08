@@ -7,6 +7,8 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import GridPattern from '@/components/magicui/grid-pattern';
 import { NeonGradientCard } from "@/components/magicui/neon-gradient-card";
+import { Card } from '@/components/ui/card';
+import { Helmet } from 'react-helmet-async';
 
 const Pricing = () => {
   const addToCart = useCartStore((state) => state.addToCart);
@@ -26,15 +28,20 @@ const Pricing = () => {
 
   return (
     <motion.div
-      className="relative bg-white min-h-screen py-12 px-4 md:px-8"
+      className="relative min-h-screen py-12 px-4 md:px-8"
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.5, delay: 0.1 }}
     >
+      <Helmet>
+        <title>Mail Vista - Pricing  </title>
+        <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/666/666162.png" type="image/png" />
+      </Helmet>
+      
       <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
       <GridPattern className="absolute inset-0 opacity-20" />
       <div className="max-w-6xl mx-auto relative">
-        <div className="text-black text-center mb-8">
+        <div className="text-center mb-8">
           <h1 className="text-5xl font-bold mb-4">Pricing Plans</h1>
           <p className="text-xl mb-4">Choose the plan that suits your needs.</p>
           <div className="flex justify-center items-center mb-8">
@@ -48,13 +55,13 @@ const Pricing = () => {
           {products.map((product, index) => (
             <div key={product.id} className="mx-auto w-full max-w-sm md:max-w-md">
               {index === 1 ? (
-                <NeonGradientCard className="max-w-sm items-center justify-center">
+                <NeonGradientCard className="max-w-sm items-center justify-center" >
                     <CardContent product={product} isYearly={isYearly} handleBuyNow={handleBuyNow} />
                 </NeonGradientCard>
               ) : (
-                <div className="p-8 bg-black text-white rounded-lg shadow-lg">
+                <Card className="p-8 rounded-3xl shadow-xl border-4 border-gray-400">
                   <CardContent product={product} isYearly={isYearly} handleBuyNow={handleBuyNow} />
-                </div>
+                </Card>
               )}
             </div>
           ))}
@@ -93,7 +100,6 @@ const CardContent = ({ product, isYearly, handleBuyNow }) => {
   };
 
   const planType = product.title.toLowerCase().split(' ')[0]; 
-
   return (
     <>
       <div className="flex justify-between items-center mb-4">
@@ -117,12 +123,10 @@ const CardContent = ({ product, isYearly, handleBuyNow }) => {
         ))}
       </div>
       <Button
-        className={`relative inline-flex w-full items-center justify-center rounded-md px-6 py-3 font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-slate-100 focus:ring-offset-2 focus:ring-offset-slate-50 ${
-          product.title.includes('Premium') ? 'bg-black text-white' : 'bg-white text-black'
-        } hover:${product.title.includes('Premium') ? 'bg-black' : 'bg-white'} hover:text-${product.title.includes('Premium') ? 'white' : 'black'}`}
+        className="relative inline-flex w-full items-center justify-center rounded-md px-6 py-3 font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-slate-100 focus:ring-offset-2 focus:ring-offset-slate-50"
         onClick={() => handleBuyNow(product)}
       >
-        <div className="absolute -inset-0.5 -z-10 rounded-lg bg-gradient-to-b from-[#c7d2fe] to-[#8678f9] opacity-75 blur" />
+        <div className="absolute -inset-0.5  rounded-lg bg-gradient-to-b from-white to-black  opacity-75 blur" />
         Buy Now
       </Button>
     </>

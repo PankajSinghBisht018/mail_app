@@ -5,6 +5,7 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
 import { checkRole } from '../utils/roles';
 import GridPattern from '@/components/magicui/grid-pattern';
+import { Helmet } from 'react-helmet-async';
 
 const drawerWidth = 240;
 
@@ -53,6 +54,10 @@ const Developer = () => {
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', position: 'relative' }}>
+      <Helmet>
+        <title>Mail Vista - Developer  </title>
+        <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/666/666162.png" type="image/png" />
+      </Helmet>
       <GridPattern />
       <Drawer
         variant="permanent"

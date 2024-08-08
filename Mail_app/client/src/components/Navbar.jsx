@@ -1,27 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, Toolbar, IconButton, Typography, Button, Drawer, List, ListItem, ListItemText, useTheme, useMediaQuery, styled } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Button, Drawer, List, ListItem, ListItemText, styled, useMediaQuery } from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { SignedIn, SignedOut, UserButton, SignInButton, useAuth, useUser } from '@clerk/clerk-react';
 import { Link } from 'react-router-dom';
 import { checkRole } from '../utils/roles';
-
-const NavLink = styled(Link)(({ theme }) => ({
-  textDecoration: 'none',
-  color: 'inherit',
-  margin: '0 16px',
-  fontSize: '1rem', 
-  '&:hover': {
-    color: theme.palette.warning.main,
-  },
-}));
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from '@/components/ThemeProvider'; 
 
 const Navbar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
   const { isLoaded, isSignedIn } = useAuth();
   const { user } = useUser();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const { theme, setTheme } = useTheme(); 
+  const isMobile = useMediaQuery('(max-width: 960px)');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,32 +29,46 @@ const Navbar = () => {
 
   const handleDrawerToggle = () => setDrawerOpen(!drawerOpen);
 
+  const handleThemeToggle = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark'); 
+  };
+
+  const NavLink = styled(Link)({
+    textDecoration: 'none',
+    margin: '0 16px',
+    fontSize: '1rem',
+    '&:hover': {
+      color: 'orange',
+    },
+  });
+
   return (
     <>
       <AppBar
         position={isSticky ? 'fixed' : 'relative'}
         sx={{
           backdropFilter: isSticky ? 'blur(10px)' : 'none',
-          backgroundColor: isSticky ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+          backgroundColor: theme === 'dark' ? 'rgba(17, 24, 39, 0.8)' : 'rgba(255, 255, 255, 0.1)', 
           boxShadow: isSticky ? 3 : 'none',
           top: 0,
           left: 0,
           right: 0,
-          zIndex: theme.zIndex.appBar,
+          zIndex: 20,
           transition: 'all 0.3s ease-in-out',
-          borderRadius: isSticky ? '50px' : '0', 
-          marginTop: isSticky ? 1 : 0, 
-          padding: isSticky ? '8px 16px' : '16px 32px', 
+          borderRadius: isSticky ? '50px' : '0',
+          marginTop: isSticky ? 1 : 0,
+          padding: isSticky ? '8px 16px' : '16px 32px',
         }}
       >
         <Toolbar sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-              <img src='https://cdn-icons-png.flaticon.com/512/666/666162.png' alt="Logo" style={{ height: 40, marginLeft: isSticky ? 0 : '16px' }} />
-            </Link>
-          </Typography>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{ display: isMobile ? 'none' : 'flex', color: 'black', alignItems: 'center' }}>
+        
+          <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <img src='https://cdn-icons-png.flaticon.com/512/666/666162.png' alt="Logo" style={{ height: 40, marginLeft: isSticky ? 0 : '16px' }} />
+          </Link>
+
+          <div style={{ display: 'flex', alignItems: 'center',color: theme === 'dark' ? 'white' : 'black' }}>
+            <div style={{ display: isMobile ? 'none' : 'flex', alignItems: 'center', }}>
+
               <SignedIn>
                 <NavLink to="/" sx={{ fontSize: isSticky ? '0.875rem' : '1rem' }}>Home</NavLink>
                 <NavLink to="/campaign" sx={{ fontSize: isSticky ? '0.875rem' : '1rem' }}>Campaign</NavLink>
@@ -83,11 +89,20 @@ const Navbar = () => {
             <IconButton
               edge="end"
               color="inherit"
+              aria-label="theme"
+              onClick={handleThemeToggle}
+              sx={{ ml: 2 ,mt:1}}
+            >
+              {theme === 'dark' ? <Sun /> : <Moon />} 
+            </IconButton>
+            <IconButton
+              edge="end"
+              color="inherit"
               aria-label="menu"
               onClick={handleDrawerToggle}
-              sx={{ 
+              sx={{
                 display: isMobile ? 'block' : 'none',
-                color: 'black',
+                marginLeft: '16px', 
               }}
             >
               <MenuIcon />
@@ -100,7 +115,7 @@ const Navbar = () => {
         anchor="right"
         open={drawerOpen}
         onClose={handleDrawerToggle}
-        sx={{ '& .MuiDrawer-paper': { width: 250, backgroundColor: 'white', boxShadow: 3 } }}
+        sx={{ '& .MuiDrawer-paper': { width: 250, boxShadow: 3, backgroundColor: theme === 'dark' ? '#111827' : 'white', color: theme === 'dark' ? 'white' : 'black' }, zIndex: 21 }}
       >
         <List>
           <SignedIn>
@@ -118,6 +133,9 @@ const Navbar = () => {
             </ListItem>
             <ListItem component={NavLink} to="/contact" onClick={handleDrawerToggle}>
               <ListItemText primary="Contact" />
+            </ListItem>
+            <ListItem component={NavLink} to="/donate" onClick={handleDrawerToggle}>
+              <ListItemText primary="Donate" />
             </ListItem>
             {isAdmin && (
               <ListItem component={NavLink} to="/admin" onClick={handleDrawerToggle}>

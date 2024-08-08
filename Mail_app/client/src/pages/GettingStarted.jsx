@@ -11,6 +11,7 @@ import sendtemplate from '../images/sendtemplate.png';
 import gotocampaign from '../images/gotocampaign.png';
 import login from '../images/login.png';
 import videoGuide from '../videos/guide.mp4';
+import { Helmet } from 'react-helmet-async';
 
 const theme = createTheme({
   typography: {
@@ -57,6 +58,10 @@ const GettingStarted = () => {
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex', minHeight: '100vh', position: 'relative' }}>
+        <Helmet>
+          <title>Mail Vista - Getting Started  </title>
+          <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/666/666162.png" type="image/png" />
+        </Helmet>
         <GridPattern />
 
         {!isMobile && (

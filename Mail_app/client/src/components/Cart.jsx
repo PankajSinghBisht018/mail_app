@@ -9,6 +9,7 @@ import { API_URL } from '../services/helper';
 import GridPattern from '@/components/magicui/grid-pattern';
 import {Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import { Remove as RemoveIcon, Add as AddIcon } from '@mui/icons-material'; 
+import { Helmet } from 'react-helmet-async';
 
 const Cart = () => {
   const cartItems = useCartStore((state) => state.cartItems);
@@ -75,11 +76,15 @@ const Cart = () => {
   return (
     <>
       <motion.div className='relative min-h-screen'>
+      <Helmet>
+        <title>Mail Vista - Cart  </title>
+        <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/666/666162.png" type="image/png" />
+      </Helmet>
         <GridPattern className="absolute inset-0 z-0" /> 
         <div className="container mx-auto py-6 px-4 sm:px-6 lg:px-8 relative z-10">
-          <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">Shopping Cart</h2>
+          <h2 className="text-3xl font-bold text-center mb-6">Shopping Cart</h2>
           {cartItems.length === 0 ? (
-            <p className="text-xl text-center text-black">Your cart is empty.</p>
+            <p className="text-xl text-center ">Your cart is empty.</p>
           ) : (
             <Table className="bg-gray-800 text-white"> 
               <TableCaption>Your cart items.</TableCaption>
