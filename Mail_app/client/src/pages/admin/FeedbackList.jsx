@@ -3,6 +3,7 @@ import { Box, Container, Typography, Rating, Table, TableBody, TableCell, TableC
 import axios from 'axios';
 import GridPattern from '@/components/magicui/grid-pattern';
 import { API_URL } from '../../services/helper';
+import { Helmet } from 'react-helmet-async';
 
 const FeedbackList = () => {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -24,7 +25,11 @@ const FeedbackList = () => {
   }, []);
 
   return (
-    <div className="bg-white min-h-screen flex justify-center">
+    <div className="min-h-screen flex justify-center">
+      <Helmet>
+        <title>Mail Vista - Feedback List  </title>
+        <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/666/666162.png" type="image/png" />
+      </Helmet>
       <Container>
         <GridPattern />
         <Typography variant="h4" component="h2" className="text-center my-4">

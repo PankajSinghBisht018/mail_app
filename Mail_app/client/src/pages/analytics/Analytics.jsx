@@ -7,6 +7,8 @@ import 'chartjs-adapter-date-fns';
 import GridPattern from '@/components/magicui/grid-pattern';
 import { Skeleton } from '@/components/ui/skeleton'; 
 import { API_URL } from '../../services/helper';
+import { Helmet } from 'react-helmet-async';
+import { useTheme } from '@/components/ThemeProvider';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Tooltip, Legend, Title, TimeScale, Filler);
 
@@ -15,7 +17,8 @@ const Analytics = () => {
   const [templateUsageCounts, setTemplateUsageCounts] = useState([]);
   const [surveyData, setSurveyData] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const { theme } = useTheme(); 
+  const isDarkTheme = theme === 'dark';
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -100,7 +103,11 @@ const Analytics = () => {
   const feedbackData = formatFeedbackData();
 
   return (
-    <div className="relative min-h-screen bg-white text-black">
+    <div className="relative min-h-screen">
+      <Helmet>
+        <title>Mail Vista - Analytics  </title>
+        <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/666/666162.png" type="image/png" />
+      </Helmet>
       <GridPattern/>
       <div className="relative z-10 p-5">
         <div className="flex items-center mb-8">
@@ -108,7 +115,7 @@ const Analytics = () => {
           <h1 className="text-4xl font-bold">Email Analytics</h1>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-black text-white rounded-lg shadow-lg p-5">
+          <div className={`rounded-lg shadow-lg p-5 ${isDarkTheme ? 'bg-[#111827]' : 'bg-gray-100'}`}>
             <h2 className="text-xl font-bold mb-4">Emails Sent Over Time (Hourly)</h2>
             <div className="relative h-72">
               {loading ? (
@@ -118,7 +125,7 @@ const Analytics = () => {
               )}
             </div>
           </div>
-          <div className="bg-black text-white rounded-lg shadow-lg p-5">
+          <div className={`rounded-lg shadow-lg p-5 ${isDarkTheme ? 'bg-[#111827]' : 'bg-gray-100'}`}>
             <h2 className="text-xl font-bold mb-4">Template Usage</h2>
             <div className="relative h-72">
               {loading ? (
@@ -128,7 +135,7 @@ const Analytics = () => {
               )}
             </div>
           </div>
-          <div className="bg-black text-white rounded-lg shadow-lg p-5 md:col-span-2">
+          <div className={`rounded-lg shadow-lg p-5 md:col-span-2 ${isDarkTheme ? 'bg-[#111827]' : 'bg-gray-100'}`}>
             <h2 className="text-xl font-bold mb-4">User Feedback Ratings</h2>
             <div className="relative h-96">
               {loading ? (

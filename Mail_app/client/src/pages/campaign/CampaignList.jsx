@@ -7,6 +7,7 @@ import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, Tabl
 import { Skeleton } from '@/components/ui/skeleton';
 import useCampaignStore from '../../store/useCampaignStore';
 import { useUser, useAuth } from '@clerk/clerk-react';
+import { useTheme } from '@/components/ThemeProvider'; 
 
 const CampaignsList = () => {
   const { user } = useUser();
@@ -18,6 +19,8 @@ const CampaignsList = () => {
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const { theme } = useTheme(); 
+  const isDarkTheme = theme === 'dark';
 
   useEffect(() => {
     const loadCampaigns = async () => {
@@ -54,11 +57,12 @@ const CampaignsList = () => {
     campaign.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  
+
   return (
-    <div className="relative min-h-screen bg-white">
       <div className="relative z-10 p-4">
         <h1 className="text-3xl md:text-4xl font-bold mb-6 text-center">My Campaigns</h1>
-        <div className="relative bg-gray-100 p-4 rounded-lg shadow-lg">
+        <div className={`relative ${isDarkTheme ? 'bg-[#111827]' : 'bg-gray-100'} p-4 rounded-lg shadow-lg`}>
           <div className="flex justify-start my-2">
             <TextField 
               value={searchTerm}
@@ -85,7 +89,7 @@ const CampaignsList = () => {
               <Skeleton className="h-96 bg-gray-600 rounded-md mb-2" />
             </div>
           ) : (
-            <Table className="bg-gray-200">
+            <Table className={`${isDarkTheme ? 'bg-[#111827]' : 'bg-gray-100'}`}>
               <TableCaption>A list of your campaigns.</TableCaption>
               <TableHeader>
                 <TableRow>
@@ -164,7 +168,6 @@ const CampaignsList = () => {
           </DialogActions>
         </Dialog>
       </div>
-    </div>
   );
 };
 

@@ -5,6 +5,8 @@ import { motion } from 'framer-motion';
 import { ToastContainer, toast } from 'react-toastify';
 import DashboardIcon from '@mui/icons-material/Dashboard'; 
 import GridPattern from '@/components/magicui/grid-pattern'; 
+import { Helmet } from 'react-helmet-async';
+import { useTheme } from '@/components/ThemeProvider'; 
 
 const Campaign = () => {
   const navigate = useNavigate();
@@ -34,20 +36,24 @@ const Campaign = () => {
     toast.info("Click on create button");
   };
 
+  const { theme } = useTheme(); 
+  const isDarkTheme = theme === 'dark';
   const isRootPath = location.pathname === '/campaign';
 
   return (
     <div className="relative">
-      
+      <Helmet>
+        <title>Mail Vista - Campaign  </title>
+        <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/666/666162.png" type="image/png" />
+      </Helmet>
       <div className="flex relative z-10">
         <motion.div
-          className="min-h-screen flex flex-col items-center bg-white text-black shadow-lg w-16 md:w-64 transition-width duration-300 ease-in-out"
+          className="min-h-screen flex flex-col items-center shadow-lg w-16 md:w-64 transition-width duration-300 ease-in-out"
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <IconButton
-            className="p-2 m-2 text-lg hover:bg-yellow-100"
             onClick={() => navigate('/campaign')}
           >
             <DashboardIcon />
@@ -92,7 +98,7 @@ const Campaign = () => {
         </motion.div>
        
         <motion.div
-          className="flex-1 bg-white text-black min-h-screen p-8 relative z-10"
+          className="flex-1 min-h-screen p-8 relative z-10"
           initial={{ opacity: 0, x: 100 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
@@ -100,7 +106,7 @@ const Campaign = () => {
 
         <GridPattern/>
           {isRootPath && (
-            <div className="relative bg-white rounded-lg shadow-lg p-8"> 
+            <div className={`relative rounded-lg shadow-lg p-8 ${isDarkTheme ? 'bg-[#111827]' : 'bg-white'}`}> 
               <motion.div
                 className="text-center mb-8"
                 initial={{ opacity: 0, y: -50 }}
@@ -119,7 +125,7 @@ const Campaign = () => {
                 <Button
                   onClick={handleStart}
                   variant='contained'
-                  className="text-white px-4 py-2 rounded bg-gradient-to-r from-yellow-500 to-orange-600"
+                  className=" px-4 py-2 rounded bg-gradient-to-r from-yellow-500 to-orange-600"
                 >
                   Start a Campaign
                 </Button>

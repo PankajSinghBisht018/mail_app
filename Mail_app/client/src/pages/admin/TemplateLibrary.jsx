@@ -5,6 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { API_URL } from '@/services/helper';
 import { Add } from '@mui/icons-material';
+import { Helmet } from 'react-helmet-async';
 
 const TemplateLibrary = () => {
   const [templates, setTemplates] = useState([]);
@@ -68,7 +69,7 @@ const TemplateLibrary = () => {
         const response = await axios.post(`${API_URL}/api/templates`, formData);
         setTemplates((prev) => [...prev, response.data]);
       }
-
+      
       setOpenDialog(false);
       setSelectedTemplate(null);
       setError('');
@@ -84,11 +85,13 @@ const TemplateLibrary = () => {
   };
 
   return (
-    <>
-      
       <div className="relative min-h-screen flex flex-col items-center p-4">
+      <Helmet>
+        <title>Mail Vista - Template Library  </title>
+        <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/666/666162.png" type="image/png" />
+      </Helmet>
         <div className="relative z-10 w-full max-w-7xl">
-          <Typography variant="h4" component="h1" className="text-center font-bold mb-8 text-black">
+          <Typography variant="h4" component="h1" className="text-center font-bold mb-8">
             Template Library
           </Typography>
           <div className="flex justify-end mb-8 mt-4">
@@ -108,15 +111,15 @@ const TemplateLibrary = () => {
               Add New Template
             </Button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {templates.map((template) => (
-              <Card key={template._id} className="bg-white shadow-lg rounded-lg overflow-hidden max-w-xs mx-auto">
+              <Card key={template._id} className="bg-white text-black rounded-lg shadow-lg overflow-hidden max-w-xs mx-auto cursor-pointer hover:scale-105 transition-transform">
                 {template.imageUrl && (
                   <CardMedia
                     component="img"
                     image={template.imageUrl}
                     alt={template.name}
-                    className="h-48 w-full object-cover" 
+                    className="h-64 w-full object-fill"
                   />
                 )}
                 <CardContent>
@@ -124,11 +127,11 @@ const TemplateLibrary = () => {
                     {template.name}
                   </Typography>
                 </CardContent>
-                <div className="flex justify-between space-x-10 mb-4 border-t border-gray-200 mx-4">
+                <div className="flex justify-between space-x-4 mb-4 p-4 border-t border-transparent">
                   <Button
                     onClick={() => handleEdit(template)}
                     variant="contained"
-                    className="flex items-center bg-gradient-to-r from-yellow-500 to-orange-600 text-white hover:bg-yellow-600 mx-4"
+                    className="flex items-center bg-gradient-to-r from-yellow-500 to-orange-600 text-white hover:bg-yellow-600"
                   >
                     <EditIcon className="mr-2" />
                     Edit
@@ -136,7 +139,7 @@ const TemplateLibrary = () => {
                   <Button
                     onClick={() => handleDelete(template._id)}
                     variant="contained"
-                    className="flex items-center bg-gradient-to-r from-yellow-500 to-orange-600 text-white hover:bg-yellow-600 mx-4"
+                    className="flex items-center bg-gradient-to-r from-yellow-500 to-orange-600 text-white hover:bg-yellow-600"
                   >
                     <DeleteIcon className="mr-2" />
                     Delete
@@ -178,18 +181,15 @@ const TemplateLibrary = () => {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleDialogClose} variant="contained" className="bg-gradient-to-r from-yellow-500 to-orange-600 text-white hover:bg-yellow-600"
-           >
+            <Button onClick={handleDialogClose} className="bg-gradient-to-r from-yellow-500 to-orange-600 text-white hover:bg-yellow-600">
               Cancel
             </Button>
-            <Button onClick={handleSave} variant="contained" className="bg-gradient-to-r from-yellow-500 to-orange-600 text-white hover:bg-yellow-600"
-            >
+            <Button onClick={handleSave} className="bg-gradient-to-r from-yellow-500 to-orange-600 text-white hover:bg-yellow-600">
               Save
             </Button>
           </DialogActions>
         </Dialog>
       </div>
-    </>
   );
 };
 

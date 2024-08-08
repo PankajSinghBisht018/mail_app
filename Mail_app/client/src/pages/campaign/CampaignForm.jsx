@@ -105,13 +105,13 @@ const CampaignForm = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <Typography variant="h4" component="h1" className="text-center mb-4 text-black">
+        <Typography variant="h4" component="h1" className="text-center mb-4">
           {id ? 'Edit Campaign' : 'Create Campaign'}
         </Typography>
-        <Typography variant="body1" component="p" className="text-center mb-4 text-black">
+        <Typography variant="body1" component="p" className="text-center mb-4">
           {id ? 'Update the details of your campaign below.' : 'Fill out the form below to create a new campaign.'}
         </Typography>
-        <NeonGradientCard className="bg-white rounded-lg backdrop-filter mt-4 backdrop-blur-md shadow-md">
+        <NeonGradientCard className="rounded-lg backdrop-filter mt-4 backdrop-blur-md shadow-md">
           <CardContent className="p-4 sm:p-6">
             {!savedText && (
               <form onSubmit={handleSubmit} className="space-y-4">

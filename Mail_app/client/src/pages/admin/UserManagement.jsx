@@ -8,6 +8,7 @@ import GridPattern from '@/components/magicui/grid-pattern';
 import { useUser } from '@clerk/clerk-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { API_URL } from '@/services/helper';
+import { Helmet } from 'react-helmet-async';
 
 const modalStyle = {
   position: 'absolute',
@@ -84,7 +85,11 @@ const UserManagement = () => {
   };
 
   return (
-    <div className="bg-white min-h-screen flex justify-center">
+    <div className="min-h-screen flex justify-center">
+      <Helmet>
+        <title>Mail Vista - User Data  </title>
+        <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/666/666162.png" type="image/png" />
+      </Helmet>
       <Container>
         <GridPattern />
         <ToastContainer position="top-right" />
